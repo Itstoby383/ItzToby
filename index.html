@@ -3,469 +3,153 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>itztoby AI | Digital Corner</title>
-
-<!-- Fonts -->
+<meta name="theme-color" content="#0b1329">
+<title>itztoby | Digital Corner</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* ==========================================================================
-RESET & VARIABLES
-========================================================================== */
-*, *::before, *::after {
-margin: 0;
-padding: 0;
-box-sizing: border-box;
-}
-
-:root {
---bg-dark: #060913;
---card-bg: rgba(15, 23, 42, 0.65);
---card-border: rgba(255, 255, 255, 0.08);
---primary: #00f0ff;
---primary-glow: rgba(0, 240, 255, 0.25);
---secondary: #7000ff;
---text-main: #f8fafc;
---text-muted: #94a3b8;
-}
-
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 body {
-font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-background-color: var(--bg-dark);
-color: var(--text-main);
-min-height: 100vh;
-display: flex;
-flex-direction: column;
-overflow-x: hidden;
-background-image:
-radial-gradient(circle at 15% 20%, rgba(0, 240, 255, 0.08) 0%, transparent 40%),
-radial-gradient(circle at 85% 70%, rgba(112, 0, 255, 0.08) 0%, transparent 40%),
-linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  background-color: #0b1329;
+  color: #f1f5f9;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
-
-/* ==========================================================================
-NAVIGATION BAR
-========================================================================== */
 header {
-width: 100%;
-max-width: 1200px;
-margin: 0 auto;
-padding: 1.5rem 2rem;
-display: flex;
-justify-content: space-between;
-align-items: center;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-
 .brand {
-display: flex;
-align-items: center;
-gap: 0.75rem;
-text-decoration: none;
-color: #fff;
-font-weight: 800;
-font-size: 1.35rem;
-letter-spacing: -0.02em;
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-decoration: none;
 }
-
-.brand-icon {
-width: 32px;
-height: 32px;
-background: linear-gradient(135deg, var(--primary), var(--secondary));
-border-radius: 8px;
-display: flex;
-align-items: center;
-justify-content: center;
-box-shadow: 0 0 15px var(--primary-glow);
-}
-
-.nav-links {
-display: flex;
-gap: 2rem;
-align-items: center;
-list-style: none;
-}
-
-.nav-links a {
-color: var(--text-muted);
-text-decoration: none;
-font-size: 0.95rem;
-font-weight: 500;
-transition: color 0.2s;
-}
-
-.nav-links a:hover {
-color: var(--primary);
-}
-
 .nav-btn {
-background: rgba(255, 255, 255, 0.05);
-border: 1px solid var(--card-border);
-color: #fff !important;
-padding: 0.6rem 1.2rem;
-border-radius: 100px;
-transition: all 0.3s ease !important;
+  padding: 0.6rem 1.25rem;
+  border-radius: 100px;
+  background: #fff;
+  color: #0b1329;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s ease, transform 0.2s ease;
 }
-
-.nav-btn:hover {
-background: rgba(255, 255, 255, 0.1);
-border-color: rgba(255, 255, 255, 0.2);
-}
-
-/* ==========================================================================
-MAIN HERO SECTION
-========================================================================== */
+.nav-btn:hover { background: #e2e8f0; transform: translateY(-1px); }
 main {
-flex: 1;
-display: flex;
-align-items: center;
-justify-content: center;
-padding: 2rem;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem;
 }
-
-.hero-container {
-width: 100%;
-max-width: 1100px;
-display: grid;
-grid-template-columns: 1.1fr 0.9fr;
-gap: 3.5rem;
-align-items: center;
+.container {
+  width: 100%;
+  max-width: 900px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 3rem;
+  padding: 3rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.03);
 }
-
-/* Left Column Content */
-.hero-text {
-display: flex;
-flex-direction: column;
-align-items: flex-start;
-}
-
-.pill-badge {
-display: inline-flex;
-align-items: center;
-gap: 0.5rem;
-padding: 0.4rem 1rem;
-border-radius: 100px;
-background: rgba(0, 240, 255, 0.06);
-border: 1px solid rgba(0, 240, 255, 0.2);
-color: var(--primary);
-font-size: 0.85rem;
-font-weight: 600;
-margin-bottom: 1.5rem;
-}
-
-.pill-badge .dot {
-width: 6px;
-height: 6px;
-background-color: var(--primary);
-border-radius: 50%;
-box-shadow: 0 0 8px var(--primary);
-}
-
+.hero-text { display: flex; flex-direction: column; align-items: flex-start; }
 h1 {
-font-size: 3.5rem;
-font-weight: 800;
-line-height: 1.1;
-letter-spacing: -0.03em;
-margin-bottom: 1rem;
-background: linear-gradient(180deg, #ffffff 0%, #a5b4fc 100%);
--webkit-background-clip: text;
--webkit-text-fill-color: transparent;
+  margin-bottom: 0.5rem;
+  color: #fff;
+  font-size: 3rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
 }
-
-p.subtitle {
-font-size: 1.15rem;
-color: var(--text-muted);
-line-height: 1.6;
-margin-bottom: 2.2rem;
-max-width: 480px;
+.sub { margin-bottom: 2rem; color: #94a3b8; font-size: 1.25rem; }
+.status-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1.5rem;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: 12px;
+  background: rgba(239, 68, 68, 0.1);
+  color: #fca5a5;
+  font-size: 1rem;
+  font-weight: 600;
 }
-
-.cta-group {
-display: flex;
-gap: 1rem;
-align-items: center;
-width: 100%;
+.status-dot { width: 8px; height: 8px; flex-shrink: 0; border-radius: 50%; background: #ef4444; }
+.apps { display: flex; flex-direction: column; gap: 1rem; }
+.orca-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  color: #fff;
+  text-decoration: none;
+  transition: border-color 0.2s ease, transform 0.2s ease;
 }
-
-.btn-primary {
-display: inline-flex;
-align-items: center;
-justify-content: center;
-gap: 0.75rem;
-background: linear-gradient(135deg, var(--primary) 0%, #0072ff 100%);
-color: #000;
-font-weight: 700;
-font-size: 1rem;
-padding: 1rem 2rem;
-border-radius: 14px;
-text-decoration: none;
-box-shadow: 0 0 30px var(--primary-glow);
-transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+a.orca-card:hover { transform: translateY(-3px); border-color: rgba(255, 255, 255, 0.2); }
+.orca-card.disabled { opacity: 0.55; cursor: not-allowed; }
+.orca-img-wrapper { width: 100%; height: 140px; overflow: hidden; border-radius: 12px; background: #060b18; }
+.orca-img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+.games-art {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #101a33;
 }
-
-.btn-primary:hover {
-transform: translateY(-2px);
-box-shadow: 0 0 45px rgba(0, 240, 255, 0.4);
-filter: brightness(1.05);
-}
-
-/* Right Column Orca Card */
-.orca-side-card {
-position: relative;
-background: var(--card-bg);
-backdrop-filter: blur(20px);
--webkit-backdrop-filter: blur(20px);
-border: 1px solid var(--card-border);
-border-radius: 24px;
-padding: 1.5rem;
-text-decoration: none;
-color: inherit;
-display: flex;
-flex-direction: column;
-gap: 1.25rem;
-transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-box-shadow: 0 30px 60px rgba(0,0,0,0.4);
-}
-
-.orca-side-card:hover {
-transform: translateY(-6px);
-border-color: rgba(0, 240, 255, 0.3);
-box-shadow: 0 30px 60px rgba(0,0,0,0.6), 0 0 40px var(--primary-glow);
-}
-
-.orca-image-container {
-position: relative;
-width: 100%;
-height: 260px;
-border-radius: 16px;
-overflow: hidden;
-background: #090e1a;
-border: 1px solid rgba(255, 255, 255, 0.05);
-display: flex;
-align-items: center;
-justify-content: center;
-}
-
-.orca-image-container img {
-width: 100%;
-height: 100%;
-object-fit: cover;
-transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.orca-side-card:hover .orca-image-container img {
-transform: scale(1.05);
-}
-
-.orca-card-footer {
-display: flex;
-align-items: center;
-justify-content: space-between;
-padding: 0.25rem 0.5rem;
-}
-
-.orca-info {
-display: flex;
-flex-direction: column;
-}
-
-.orca-tag {
-font-size: 0.75rem;
-text-transform: uppercase;
-letter-spacing: 0.08em;
-color: var(--primary);
-font-weight: 700;
-}
-
+.games-art img { width: 100%; height: 100%; object-fit: contain; }
 .orca-title {
-font-size: 1.4rem;
-font-weight: 700;
-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 1.1rem;
+  font-weight: 600;
 }
-
-.orca-action-btn {
-display: inline-flex;
-align-items: center;
-gap: 0.5rem;
-background: rgba(255, 255, 255, 0.08);
-border: 1px solid rgba(255, 255, 255, 0.1);
-color: #fff;
-padding: 0.65rem 1.25rem;
-border-radius: 12px;
-font-weight: 600;
-font-size: 0.95rem;
-transition: all 0.3s ease;
-}
-
-.orca-side-card:hover .orca-action-btn {
-background: var(--primary);
-color: #000;
-border-color: var(--primary);
-}
-
-/* Features Grid */
-.features-strip {
-width: 100%;
-max-width: 1100px;
-margin: 2rem auto 3rem;
-display: grid;
-grid-template-columns: repeat(3, 1fr);
-gap: 1.5rem;
-padding: 0 2rem;
-}
-
-.feature-item {
-background: rgba(255, 255, 255, 0.02);
-border: 1px solid var(--card-border);
-border-radius: 16px;
-padding: 1.25rem;
-display: flex;
-align-items: center;
-gap: 1rem;
-}
-
-.feature-icon {
-width: 42px;
-height: 42px;
-border-radius: 10px;
-background: rgba(0, 240, 255, 0.1);
-display: flex;
-align-items: center;
-justify-content: center;
-color: var(--primary);
-flex-shrink: 0;
-}
-
-.feature-text h4 {
-font-size: 0.95rem;
-font-weight: 600;
-color: #fff;
-}
-
-.feature-text p {
-font-size: 0.825rem;
-color: var(--text-muted);
-}
-
-/* ==========================================================================
-RESPONSIVE DESIGN
-========================================================================== */
-@media (max-width: 900px) {
-.hero-container {
-grid-template-columns: 1fr;
-gap: 2.5rem;
-}
-
-h1 {
-font-size: 2.5rem;
-}
-
-.features-strip {
-grid-template-columns: 1fr;
-}
-
-.nav-links {
-display: none;
-}
+.tag { color: #fca5a5; font-size: 0.75rem; font-weight: 600; }
+@media (max-width: 768px) {
+  .container { grid-template-columns: 1fr; gap: 2rem; padding: 2rem; }
+  h1 { font-size: 2.25rem; }
 }
 </style>
 </head>
 <body>
-
-<!-- Header Navigation -->
 <header>
-<a href="#" class="brand">
-<div class="brand-icon">
-<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-</div>
-itztoby
-</a>
-<ul class="nav-links">
-<li><a href="https://orca.itztoby.co.uk/">AI Workspace</a></li>
-<li><a href="https://orca.itztoby.co.uk/">Models</a></li>
-<li><a href="https://orca.itztoby.co.uk/" class="nav-btn">Launch Helper</a></li>
-</ul>
+  <a href="index.html" class="brand">itztoby</a>
+  <a href="signin.html" class="nav-btn">Sign up</a>
 </header>
-
-<!-- Hero Content -->
 <main>
-<div class="hero-container">
-
-<!-- Left side: Platform Description -->
-<div class="hero-text">
-<div class="pill-badge">
-<span class="dot"></span>
-Digital Corner AI Ecosystem
-</div>
-
-<h1>itztoby</h1>
-<p class="subtitle">
-Your sleek digital corner for intelligent tools, high-speed assistance, and next-generation AI workflows.
-</p>
-
-<div class="cta-group">
-<a href="https://orca.itztoby.co.uk/" class="btn-primary" rel="noopener noreferrer">
-Easy Free AI Helper
-<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-</a>
-</div>
-</div>
-
-<!-- Right side: Orca Side Card Feature -->
-<a href="https://orca.itztoby.co.uk/" class="orca-side-card" rel="noopener noreferrer">
-<div class="orca-image-container">
-<img src="orca.png" alt="Try Orca AI Model">
-</div>
-<div class="orca-card-footer">
-<div class="orca-info">
-<span class="orca-tag">Featured Model</span>
-<span class="orca-title">Try Orca</span>
-</div>
-<div class="orca-action-btn">
-Explore
-<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-</div>
-</div>
-</a>
-
-</div>
+  <div class="container">
+    <div class="hero-text">
+      <h1>itztoby</h1>
+      <p class="sub">your digital corner</p>
+      <p class="status-text" role="status"><span class="status-dot"></span>Orca is out of service atm</p>
+    </div>
+    <div class="apps">
+      <div class="orca-card disabled" aria-disabled="true">
+        <div class="orca-img-wrapper"><img src="orca.png" alt="Orca"></div>
+        <div class="orca-title"><span>Orca</span><span class="tag">Out of service</span></div>
+      </div>
+      <a href="https://games.itztoby.co.uk/" class="orca-card" rel="noopener noreferrer">
+        <div class="orca-img-wrapper games-art"><img src="tobgam.png" alt="Tobzter Games"></div>
+        <div class="orca-title">
+          <span>Tobzter Games</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+      </a>
+    </div>
+  </div>
 </main>
-
-<!-- Quick Feature Strip -->
-<section class="features-strip">
-<div class="feature-item">
-<div class="feature-icon">
-<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-</div>
-<div class="feature-text">
-<h4>Ultra Fast</h4>
-<p>Instant answers with zero latency</p>
-</div>
-</div>
-
-<div class="feature-item">
-<div class="feature-icon">
-<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-</div>
-<div class="feature-text">
-<h4>100% Free</h4>
-<p>Accessible anytime, no limits</p>
-</div>
-</div>
-
-<div class="feature-item">
-<div class="feature-icon">
-<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-</div>
-<div class="feature-text">
-<h4>Orca AI</h4>
-<p>Powered by advanced intelligence</p>
-</div>
-</div>
-</section>
-
 </body>
 </html>
