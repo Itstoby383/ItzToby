@@ -7,259 +7,387 @@
 <title>itztoby | Digital Corner</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0b1329;
+  --surface: rgba(255,255,255,0.03);
+  --border: rgba(255,255,255,0.08);
+  --border-hover: rgba(255,255,255,0.18);
+  --text: #f1f5f9;
+  --muted: #94a3b8;
+  --accent: #6366f1;
+  --accent2: #8b5cf6;
+}
+
+html { scroll-behavior: smooth; }
+
 body {
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  background-color: #0b1329;
-  color: #f1f5f9;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-header {
-  width: 100%;
-  max-width: 1000px;
+/* ── NAV ── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  background: rgba(11,19,41,0.8);
+  border-bottom: 1px solid var(--border);
+}
+.nav-inner {
+  max-width: 1080px;
   margin: 0 auto;
-  padding: 1.75rem 1.5rem;
+  padding: 1rem 1.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 .brand {
   color: #fff;
-  font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
   text-decoration: none;
 }
+.brand span { color: var(--accent); }
 .nav-right { display: flex; align-items: center; gap: 0.6rem; }
 
 .nav-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  padding: 0.6rem 1.2rem;
+  gap: 0.4rem;
+  padding: 0.55rem 1.1rem;
   border-radius: 100px;
-  border: 1px solid rgba(255,255,255,0.12);
-  background: rgba(255,255,255,0.06);
-  color: #e2e8f0;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: #cbd5e1;
   font-family: inherit;
-  font-size: 0.875rem;
+  font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s, border-color 0.2s, transform 0.2s;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+  text-decoration: none;
 }
-.nav-btn:hover {
-  background: rgba(255,255,255,0.11);
-  border-color: rgba(255,255,255,0.22);
-  transform: translateY(-1px);
+.nav-btn:hover { background: rgba(255,255,255,0.09); border-color: var(--border-hover); transform: translateY(-1px); }
+.nav-btn.danger { background: rgba(239,68,68,0.08); border-color: rgba(239,68,68,0.22); color: #fca5a5; }
+.nav-btn.danger:hover { background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.38); }
+
+/* ── HERO ── */
+.hero {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 6rem 1.5rem 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5rem;
 }
-.nav-btn.logout {
-  background: rgba(239,68,68,0.1);
-  border-color: rgba(239,68,68,0.25);
-  color: #fca5a5;
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: 100px;
+  border: 1px solid rgba(99,102,241,0.3);
+  background: rgba(99,102,241,0.1);
+  color: #a5b4fc;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
-.nav-btn.logout:hover {
-  background: rgba(239,68,68,0.18);
-  border-color: rgba(239,68,68,0.4);
+.hero-dot { width: 6px; height: 6px; border-radius: 50%; background: #818cf8; }
+.hero h1 {
+  font-size: clamp(2.8rem, 6vw, 4.5rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.08;
+  color: #fff;
+}
+.hero h1 em { font-style: normal; color: var(--accent); }
+.hero-desc {
+  max-width: 540px;
+  color: var(--muted);
+  font-size: 1.1rem;
+  line-height: 1.7;
+}
+.hero-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.6rem;
+  border-radius: 12px;
+  background: var(--accent);
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: filter 0.2s, transform 0.15s;
+}
+.btn-primary:hover { filter: brightness(1.15); transform: translateY(-2px); }
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.6rem;
+  border-radius: 12px;
+  background: var(--surface);
+  color: #cbd5e1;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+}
+.btn-ghost:hover { background: rgba(255,255,255,0.07); border-color: var(--border-hover); transform: translateY(-2px); }
+
+/* ── SECTION WRAPPER ── */
+.section {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+}
+.section-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.6rem;
+}
+.section-title {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #fff;
+  margin-bottom: 0.75rem;
+}
+.section-desc {
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.7;
+  max-width: 560px;
+  margin-bottom: 2.5rem;
 }
 
-/* ── Profile modal ── */
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.65);
+/* ── APPS GRID ── */
+.apps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.25rem;
+}
+.app-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--surface);
+  overflow: hidden;
+  text-decoration: none;
+  color: #fff;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+a.app-card:hover {
+  border-color: rgba(99,102,241,0.4);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+.app-card.disabled { opacity: 0.5; cursor: not-allowed; }
+.app-thumb {
+  width: 100%;
+  height: 180px;
+  background: #060d1f;
+  overflow: hidden;
+  position: relative;
+}
+.app-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.app-thumb.contain-art {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 100;
+  background: #0d1a35;
+}
+.app-thumb.contain-art img { object-fit: contain; width: 80%; height: 80%; }
+.app-body { padding: 1.4rem; display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.app-name { font-size: 1.1rem; font-weight: 700; }
+.app-tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 100px;
+  background: rgba(239,68,68,0.12);
+  color: #fca5a5;
+  border: 1px solid rgba(239,68,68,0.2);
+}
+.app-tag.live {
+  background: rgba(34,197,94,0.12);
+  color: #86efac;
+  border-color: rgba(34,197,94,0.2);
+}
+.app-desc { color: var(--muted); font-size: 0.88rem; line-height: 1.6; }
+.app-footer {
+  margin-top: auto;
+  padding-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #818cf8;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* ── DIVIDER ── */
+.page-divider {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+.page-divider hr { border: none; border-top: 1px solid var(--border); }
+
+/* ── CONTACT ── */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+.contact-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
   padding: 1.5rem;
-  opacity: 0;
-  pointer-events: none;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  text-decoration: none;
+  color: #fff;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.contact-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+.contact-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-size: 1.3rem;
+}
+.contact-icon.phone { background: rgba(99,102,241,0.15); }
+.contact-icon.email { background: rgba(139,92,246,0.15); }
+.contact-text { display: flex; flex-direction: column; gap: 0.15rem; }
+.contact-label { font-size: 0.75rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+.contact-value { font-size: 1rem; font-weight: 700; color: #fff; }
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--border);
+  margin-top: auto;
+}
+.footer-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.footer-brand { font-size: 1.1rem; font-weight: 800; letter-spacing: -0.02em; color: #fff; }
+.footer-brand span { color: var(--accent); }
+.footer-copy { color: var(--muted); font-size: 0.82rem; }
+
+/* ── PROFILE MODAL ── */
+.modal-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.65);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 200; padding: 1.5rem;
+  opacity: 0; pointer-events: none;
   transition: opacity 0.2s;
 }
 .modal-backdrop.open { opacity: 1; pointer-events: all; }
 .modal {
-  width: 100%;
-  max-width: 400px;
+  width: 100%; max-width: 400px;
   background: #111d38;
   border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 20px;
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  transform: translateY(14px);
-  transition: transform 0.2s;
+  border-radius: 20px; padding: 2rem;
+  display: flex; flex-direction: column; gap: 1.25rem;
+  transform: translateY(14px); transition: transform 0.2s;
 }
 .modal-backdrop.open .modal { transform: translateY(0); }
-
 .modal-header { display: flex; align-items: center; justify-content: space-between; }
 .modal-header h2 { font-size: 1.05rem; font-weight: 700; color: #fff; }
 .close-btn {
   width: 30px; height: 30px;
   display: flex; align-items: center; justify-content: center;
-  background: rgba(255,255,255,0.06);
-  border: none; border-radius: 50%;
+  background: rgba(255,255,255,0.06); border: none; border-radius: 50%;
   color: #94a3b8; cursor: pointer; font-size: 1rem;
   transition: background 0.2s;
 }
 .close-btn:hover { background: rgba(255,255,255,0.12); }
-
-/* Avatar */
-.avatar-wrap { display: flex; justify-content: center; padding: 0.5rem 0; }
+.avatar-wrap { display: flex; justify-content: center; padding: 0.4rem 0; }
 .avatar {
-  width: 72px; height: 72px;
-  border-radius: 50%;
+  width: 72px; height: 72px; border-radius: 50%;
   background: linear-gradient(135deg, #6366f1, #8b5cf6);
   display: flex; align-items: center; justify-content: center;
   font-size: 1.75rem; font-weight: 700; color: #fff;
-  flex-shrink: 0;
 }
-
-/* Info rows */
 .info-block {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  display: flex; flex-direction: column; gap: 0.5rem;
   background: rgba(255,255,255,0.03);
   border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 12px;
-  padding: 1rem 1.1rem;
+  border-radius: 12px; padding: 1rem 1.1rem;
 }
-.info-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
+.info-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .info-row + .info-row { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.5rem; }
-.info-label { color: #64748b; font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
-.info-value { color: #e2e8f0; font-size: 0.9rem; font-weight: 500; word-break: break-all; text-align: right; }
-
-/* Status badge */
+.info-label { color: #64748b; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+.info-value { color: #e2e8f0; font-size: 0.88rem; font-weight: 500; word-break: break-all; text-align: right; }
 .badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.25rem 0.65rem;
-  border-radius: 100px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  background: rgba(34,197,94,0.12);
-  color: #86efac;
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.22rem 0.6rem; border-radius: 100px;
+  font-size: 0.72rem; font-weight: 700;
+  background: rgba(34,197,94,0.12); color: #86efac;
   border: 1px solid rgba(34,197,94,0.2);
 }
 .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; }
-
 .modal-divider { height: 1px; background: rgba(255,255,255,0.07); }
-
-/* Loading shimmer */
 .shimmer {
-  display: inline-block;
-  width: 100px; height: 0.9rem;
-  border-radius: 4px;
+  display: inline-block; width: 100px; height: 0.85rem; border-radius: 4px;
   background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.4s infinite;
 }
 @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-/* ── Main content ── */
-main {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem 1.5rem;
-}
-.container {
-  width: 100%;
-  max-width: 900px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: center;
-  gap: 3rem;
-  padding: 3rem;
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 24px;
-  background: rgba(255,255,255,0.03);
-}
-.hero-text { display: flex; flex-direction: column; align-items: flex-start; }
-h1.page-title {
-  margin-bottom: 0.5rem;
-  color: #fff;
-  font-size: 3rem;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-}
-.sub { margin-bottom: 2rem; color: #94a3b8; font-size: 1.25rem; }
-.status-text {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.85rem 1.5rem;
-  border: 1px solid rgba(239,68,68,0.25);
-  border-radius: 12px;
-  background: rgba(239,68,68,0.1);
-  color: #fca5a5;
-  font-size: 1rem;
-  font-weight: 600;
-}
-.status-dot {
-  width: 8px; height: 8px;
-  flex-shrink: 0;
-  border-radius: 50%;
-  background: #ef4444;
-  animation: pulse 2s infinite;
-}
-@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-
-.apps { display: flex; flex-direction: column; gap: 1rem; }
-.orca-card {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  padding: 1.25rem;
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 16px;
-  background: rgba(255,255,255,0.03);
-  color: #fff;
-  text-decoration: none;
-  transition: border-color 0.2s, transform 0.2s;
-}
-a.orca-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.2); }
-.orca-card.disabled { opacity: 0.55; cursor: not-allowed; }
-.orca-img-wrapper {
-  width: 100%; height: 140px;
-  overflow: hidden;
-  border-radius: 12px;
-  background: #060b18;
-}
-.orca-img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
-.games-art { display: flex; align-items: center; justify-content: center; background: #101a33; }
-.games-art img { width: 100%; height: 100%; object-fit: contain; }
-.orca-title {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 1.1rem;
-  font-weight: 600;
-}
-.tag { color: #fca5a5; font-size: 0.75rem; font-weight: 600; }
-
-@media (max-width: 768px) {
-  .container { grid-template-columns: 1fr; gap: 2rem; padding: 2rem; }
-  h1.page-title { font-size: 2.25rem; }
+/* ── RESPONSIVE ── */
+@media (max-width: 680px) {
+  .hero { padding: 4rem 1.25rem 3rem; }
+  .contact-grid { grid-template-columns: 1fr; }
+  .footer-inner { flex-direction: column; align-items: flex-start; }
 }
 </style>
 </head>
 <body>
 
-<!-- Guard: bounce to sign-in if no stored session -->
 <script>
   (function() {
     var raw = null;
@@ -270,60 +398,135 @@ a.orca-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,
   })();
 </script>
 
-<header>
-  <a href="main.html" class="brand">itztoby</a>
-  <div class="nav-right">
-    <button type="button" class="nav-btn" id="profile-btn">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-      Profile
-    </button>
-    <button type="button" class="nav-btn logout" id="logout-btn">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-      Sign out
-    </button>
-  </div>
-</header>
-
-<main>
-  <div class="container">
-    <div class="hero-text">
-      <h1 class="page-title">itztoby</h1>
-      <p class="sub">your digital corner</p>
-      <p class="status-text" role="status">
-        <span class="status-dot"></span>Orca is out of service atm
-      </p>
+<!-- ── NAV ── -->
+<nav>
+  <div class="nav-inner">
+    <a href="main.html" class="brand">itz<span>toby</span></a>
+    <div class="nav-right">
+      <button type="button" class="nav-btn" id="profile-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        Profile
+      </button>
+      <button type="button" class="nav-btn danger" id="logout-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sign out
+      </button>
     </div>
-    <div class="apps">
-      <div class="orca-card disabled" aria-disabled="true">
-        <div class="orca-img-wrapper"><img src="orca.png" alt="Orca"></div>
-        <div class="orca-title">
-          <span>Orca</span>
-          <span class="tag">Out of service</span>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="hero-eyebrow"><span class="hero-dot"></span>Personal hub</div>
+  <h1>Your <em>digital</em><br>corner.</h1>
+  <p class="hero-desc">
+    Welcome to itztoby — a personal space for apps, games, and tools built and curated by Toby.
+    Everything in one place, just for you.
+  </p>
+  <div class="hero-actions">
+    <a href="#apps" class="btn-primary">
+      Explore apps
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+    <a href="#contact" class="btn-ghost">Get in touch</a>
+  </div>
+</div>
+
+<div class="page-divider"><hr></div>
+
+<!-- ── APPS ── -->
+<div class="section" id="apps">
+  <p class="section-label">Apps &amp; Projects</p>
+  <h2 class="section-title">What's available</h2>
+  <p class="section-desc">A collection of projects I've been building. Some are live, some are cooking — check back as things grow.</p>
+
+  <div class="apps-grid">
+
+    <!-- Orca -->
+    <div class="app-card disabled" aria-disabled="true">
+      <div class="app-thumb">
+        <img src="orca.png" alt="Orca">
+      </div>
+      <div class="app-body">
+        <div class="app-header">
+          <span class="app-name">Orca</span>
+          <span class="app-tag">Coming soon</span>
+        </div>
+        <p class="app-desc">
+          Orca is a personal assistant and productivity tool I've been building from scratch.
+          It's currently under heavy development — stay tuned for the launch.
+        </p>
+      </div>
+    </div>
+
+    <!-- Tobzter Games -->
+    <a href="https://games.itztoby.co.uk/" class="app-card" rel="noopener noreferrer">
+      <div class="app-thumb contain-art">
+        <img src="tobgam.png" alt="Tobzter Games">
+      </div>
+      <div class="app-body">
+        <div class="app-header">
+          <span class="app-name">Tobzter Games</span>
+          <span class="app-tag live">Live</span>
+        </div>
+        <p class="app-desc">
+          A growing collection of browser games built for fun.
+          Jump in and play — no downloads, no installs, just open and go.
+        </p>
+        <div class="app-footer">
+          Play now
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </div>
       </div>
-      <a href="https://games.itztoby.co.uk/" class="orca-card" rel="noopener noreferrer">
-        <div class="orca-img-wrapper games-art"><img src="tobgam.png" alt="Tobzter Games"></div>
-        <div class="orca-title">
-          <span>Tobzter Games</span>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </div>
-      </a>
-    </div>
-  </div>
-</main>
+    </a>
 
-<!-- Profile modal -->
+  </div>
+</div>
+
+<div class="page-divider"><hr></div>
+
+<!-- ── CONTACT ── -->
+<div class="section" id="contact">
+  <p class="section-label">Contact</p>
+  <h2 class="section-title">Get in touch</h2>
+  <p class="section-desc">Have a question, idea, or just want to say hi? Reach out — I'm always up for a chat.</p>
+
+  <div class="contact-grid">
+    <a href="tel:07493636616" class="contact-card">
+      <div class="contact-icon phone">📞</div>
+      <div class="contact-text">
+        <span class="contact-label">Phone</span>
+        <span class="contact-value">07493 636616</span>
+      </div>
+    </a>
+    <a href="mailto:toby@itztoby.co.uk" class="contact-card">
+      <div class="contact-icon email">✉️</div>
+      <div class="contact-text">
+        <span class="contact-label">Email</span>
+        <span class="contact-value">toby@itztoby.co.uk</span>
+      </div>
+    </a>
+  </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-inner">
+    <span class="footer-brand">itz<span>toby</span></span>
+    <span class="footer-copy">© 2026 itztoby. All rights reserved.</span>
+  </div>
+</footer>
+
+<!-- ── PROFILE MODAL ── -->
 <div class="modal-backdrop" id="modal-backdrop" role="dialog" aria-modal="true" aria-label="Profile">
   <div class="modal">
     <div class="modal-header">
       <h2>Profile</h2>
       <button class="close-btn" id="close-modal" aria-label="Close">✕</button>
     </div>
-
     <div class="avatar-wrap">
       <div class="avatar" id="avatar-initials">…</div>
     </div>
-
     <div class="info-block">
       <div class="info-row">
         <span class="info-label">Username</span>
@@ -335,24 +538,22 @@ a.orca-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,
       </div>
       <div class="info-row">
         <span class="info-label">User ID</span>
-        <span class="info-value" id="p-id" style="font-size:0.78rem;color:#64748b"><span class="shimmer"></span></span>
+        <span class="info-value" id="p-id" style="font-size:0.75rem;color:#64748b"><span class="shimmer"></span></span>
       </div>
       <div class="info-row">
         <span class="info-label">Status</span>
         <span class="info-value"><span class="badge"><span class="badge-dot"></span>Active</span></span>
       </div>
     </div>
-
     <div class="modal-divider"></div>
-
-    <button type="button" class="nav-btn logout" id="modal-logout-btn" style="width:100%;justify-content:center;">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    <button type="button" class="nav-btn danger" id="modal-logout-btn" style="width:100%;justify-content:center;border-radius:12px;padding:0.75rem;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
       Sign out
     </button>
   </div>
 </div>
 
-<!-- ItIsNow: hidden, no button — just session management -->
+<!-- ItIsNow: session management only, no visible button -->
 <script src="https://api.itisnow.net/button.js"
         data-app-id="app_XnOUnf_n2Js1"
         data-button="false"></script>
@@ -360,7 +561,6 @@ a.orca-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,
 <script>
   var API = 'https://api.itisnow.net';
 
-  /* ── helpers ── */
   function getInitials(name) {
     if (!name) return '?';
     return name.trim().split(/\s+/).map(function(w){ return w[0]; }).join('').toUpperCase().slice(0,2);
@@ -370,19 +570,15 @@ a.orca-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,
     var name = user.username || user.email || 'user';
     document.getElementById('avatar-initials').textContent = getInitials(name);
     document.getElementById('p-username').textContent = user.username || '—';
-    document.getElementById('p-email').textContent     = user.email    || '—';
-    document.getElementById('p-id').textContent        = user.id       || '—';
+    document.getElementById('p-email').textContent    = user.email    || '—';
+    document.getElementById('p-id').textContent       = user.id       || '—';
   }
 
   function signOut() {
-    // Revoke token server-side via ItIsNow, clear our storage
     var token = null;
     try { token = JSON.parse(localStorage.getItem('orca_user')).token; } catch(e) {}
     if (token) {
-      fetch(API + '/api/revoke', {
-        method: 'POST',
-        headers: { Authorization: 'Bearer ' + token }
-      }).catch(function(){});
+      fetch(API + '/api/revoke', { method: 'POST', headers: { Authorization: 'Bearer ' + token } }).catch(function(){});
     }
     try { localStorage.removeItem('orca_user'); } catch(e) {}
     window.location.replace('index.html');
@@ -391,56 +587,36 @@ a.orca-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,
   function openModal()  { document.getElementById('modal-backdrop').classList.add('open'); }
   function closeModal() { document.getElementById('modal-backdrop').classList.remove('open'); }
 
-  /* ── Boot: load stored session then verify live from /api/me ── */
+  // Boot
   var stored = null;
   try { stored = JSON.parse(localStorage.getItem('orca_user')); } catch(e) {}
-
   if (stored) {
-    // Show cached data immediately
     fillProfile(stored);
-
-    // Then fetch fresh data from the API
-    fetch(API + '/api/me', {
-      headers: { Authorization: 'Bearer ' + stored.token }
-    })
-    .then(function(r) {
-      if (r.status === 401) {
-        // Token expired — kick back to sign-in
-        try { localStorage.removeItem('orca_user'); } catch(e) {}
-        window.location.replace('index.html');
-        return null;
-      }
-      return r.json();
-    })
-    .then(function(data) {
-      if (!data) return;
-      var user = data.user || data;
-      // Merge fresh data back
-      var updated = {
-        id:       user.id       || stored.id,
-        username: user.username || stored.username,
-        email:    user.email    || stored.email,
-        token:    stored.token
-      };
-      try { localStorage.setItem('orca_user', JSON.stringify(updated)); } catch(e) {}
-      fillProfile(updated);
-    })
-    .catch(function() {
-      // Network issue — just keep showing cached data
-    });
+    fetch(API + '/api/me', { headers: { Authorization: 'Bearer ' + stored.token } })
+      .then(function(r) {
+        if (r.status === 401) {
+          try { localStorage.removeItem('orca_user'); } catch(e) {}
+          window.location.replace('index.html');
+          return null;
+        }
+        return r.json();
+      })
+      .then(function(data) {
+        if (!data) return;
+        var user = data.user || data;
+        var updated = { id: user.id || stored.id, username: user.username || stored.username, email: user.email || stored.email, token: stored.token };
+        try { localStorage.setItem('orca_user', JSON.stringify(updated)); } catch(e) {}
+        fillProfile(updated);
+      })
+      .catch(function() {});
   }
 
-  /* ── Events ── */
   document.getElementById('logout-btn').addEventListener('click', signOut);
   document.getElementById('modal-logout-btn').addEventListener('click', signOut);
   document.getElementById('profile-btn').addEventListener('click', openModal);
   document.getElementById('close-modal').addEventListener('click', closeModal);
-  document.getElementById('modal-backdrop').addEventListener('click', function(e) {
-    if (e.target === this) closeModal();
-  });
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') closeModal();
-  });
+  document.getElementById('modal-backdrop').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
 </script>
 
 </body>
