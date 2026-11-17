@@ -16,20 +16,18 @@ body {
   background-color: #0b1329;
   color: #f1f5f9;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
 }
+
+.view { display: none; }
+.view.active { display: flex; }
 
 /* ── SIGN-IN VIEW ── */
 #auth-view {
-  flex: 1;
-  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
   padding: 2rem 1.5rem;
-  gap: 0;
 }
 
 .login-card {
@@ -40,9 +38,9 @@ body {
   align-items: center;
   gap: 1.75rem;
   padding: 3rem 2.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 24px;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255,255,255,0.03);
   text-align: center;
 }
 
@@ -53,41 +51,21 @@ body {
   color: #fff;
 }
 
-.login-heading {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
+.login-heading { display: flex; flex-direction: column; gap: 0.5rem; }
 .login-heading h1 {
   font-size: 2rem;
   font-weight: 700;
   letter-spacing: -0.03em;
   color: #fff;
 }
+.login-heading p { color: #94a3b8; font-size: 0.95rem; }
 
-.login-heading p {
-  color: #94a3b8;
-  font-size: 0.95rem;
-}
+.divider { width: 100%; height: 1px; background: rgba(255,255,255,0.07); }
 
-.divider {
-  width: 100%;
-  height: 1px;
-  background: rgba(255,255,255,0.07);
-}
-
-#it-is-now-btn-container { width: 100%; display: flex; justify-content: center; }
-
-.error {
-  color: #fca5a5;
-  font-size: 0.85rem;
-  min-height: 1.2em;
-}
+.error { color: #fca5a5; font-size: 0.85rem; min-height: 1.2em; }
 
 /* ── MAIN VIEW ── */
 #main-view {
-  display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
@@ -124,9 +102,8 @@ header {
   font-family: inherit;
   font-size: 0.875rem;
   font-weight: 600;
-  text-decoration: none;
   cursor: pointer;
-  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
 }
 .nav-btn:hover {
   background: rgba(255,255,255,0.11);
@@ -155,12 +132,10 @@ header {
   padding: 1.5rem;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s;
 }
-.modal-backdrop.open {
-  opacity: 1;
-  pointer-events: all;
-}
+.modal-backdrop.open { opacity: 1; pointer-events: all; }
+
 .modal {
   width: 100%;
   max-width: 380px;
@@ -172,23 +147,19 @@ header {
   flex-direction: column;
   gap: 1.5rem;
   transform: translateY(12px);
-  transition: transform 0.2s ease;
+  transition: transform 0.2s;
 }
 .modal-backdrop.open .modal { transform: translateY(0); }
 
-.modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
+.modal-header { display: flex; align-items: center; justify-content: space-between; }
 .modal-header h2 { font-size: 1.1rem; font-weight: 700; color: #fff; }
+
 .close-btn {
   width: 32px; height: 32px;
   display: flex; align-items: center; justify-content: center;
   background: rgba(255,255,255,0.06);
   border: none; border-radius: 50%;
-  color: #94a3b8; cursor: pointer;
-  font-size: 1.1rem;
+  color: #94a3b8; cursor: pointer; font-size: 1.1rem;
   transition: background 0.2s;
 }
 .close-btn:hover { background: rgba(255,255,255,0.12); }
@@ -198,19 +169,13 @@ header {
   border-radius: 50%;
   background: linear-gradient(135deg, #6366f1, #8b5cf6);
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.5rem; font-weight: 700; color: #fff;
+  font-size: 1.4rem; font-weight: 700; color: #fff;
   flex-shrink: 0;
 }
-
-.profile-row {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
+.profile-row { display: flex; align-items: center; gap: 1rem; }
 .profile-info { display: flex; flex-direction: column; gap: 0.2rem; }
 .profile-name { font-weight: 700; color: #fff; font-size: 1rem; }
 .profile-email { color: #64748b; font-size: 0.8rem; }
-
 .modal-divider { height: 1px; background: rgba(255,255,255,0.07); }
 
 /* Main content */
@@ -230,9 +195,9 @@ main {
   align-items: center;
   gap: 3rem;
   padding: 3rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 24px;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255,255,255,0.03);
 }
 
 .hero-text { display: flex; flex-direction: column; align-items: flex-start; }
@@ -252,14 +217,13 @@ h1.page-title {
   align-items: center;
   gap: 0.6rem;
   padding: 0.85rem 1.5rem;
-  border: 1px solid rgba(239, 68, 68, 0.25);
+  border: 1px solid rgba(239,68,68,0.25);
   border-radius: 12px;
-  background: rgba(239, 68, 68, 0.1);
+  background: rgba(239,68,68,0.1);
   color: #fca5a5;
   font-size: 1rem;
   font-weight: 600;
 }
-
 .status-dot {
   width: 8px; height: 8px;
   flex-shrink: 0;
@@ -279,12 +243,12 @@ h1.page-title {
   flex-direction: column;
   gap: 1rem;
   padding: 1.25rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255,255,255,0.03);
   color: #fff;
   text-decoration: none;
-  transition: border-color 0.2s ease, transform 0.2s ease;
+  transition: border-color 0.2s, transform 0.2s;
 }
 a.orca-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.2); }
 .orca-card.disabled { opacity: 0.55; cursor: not-allowed; }
@@ -317,42 +281,34 @@ a.orca-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,
 </head>
 <body>
 
-<script>
-  (function () {
-    var raw = null;
-    try { raw = localStorage.getItem('orca_user'); } catch (e) {}
-    var user = null;
-    if (raw) { try { user = JSON.parse(raw); } catch (e) { user = null; } }
-    window.__orcaUser = user;
-    document.documentElement.style.visibility = 'hidden';
-  })();
-</script>
-
 <!-- ══ SIGN-IN VIEW ══════════════════════════════════════════ -->
-<div id="auth-view" hidden>
+<div id="auth-view" class="view">
   <div class="login-card">
     <div class="brand-mark">itztoby</div>
     <div class="login-heading">
       <h1>Welcome back</h1>
-      <p>Sign in to access your digital corner.</p>
+      <p>Sign in to continue.</p>
     </div>
     <div class="divider"></div>
-    <div id="it-is-now-btn-container"></div>
+    <!-- ItIsNow button renders right here, inside the card -->
+    <script src="https://api.itisnow.net/button.js"
+            data-app-id="app_XnOUnf_n2Js1"
+            data-onlogin="onItIsNowLogin"></script>
     <p class="error" id="error-msg"></p>
   </div>
 </div>
 
 <!-- ══ MAIN VIEW ═════════════════════════════════════════════ -->
-<div id="main-view" hidden>
+<div id="main-view" class="view">
   <header>
     <a href="index.html" class="brand">itztoby</a>
     <div class="nav-right">
       <button type="button" class="nav-btn" id="profile-btn">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
         Profile
       </button>
       <button type="button" class="nav-btn logout" id="logout-btn">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
         Sign out
       </button>
     </div>
@@ -379,7 +335,7 @@ a.orca-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,
           <div class="orca-img-wrapper games-art"><img src="tobgam.png" alt="Tobzter Games"></div>
           <div class="orca-title">
             <span>Tobzter Games</span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </div>
         </a>
       </div>
@@ -403,14 +359,11 @@ a.orca-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,
     </div>
     <div class="modal-divider"></div>
     <button type="button" class="nav-btn logout" id="modal-logout-btn" style="width:100%;justify-content:center;">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
       Sign out
     </button>
   </div>
 </div>
-
-<!-- ItIsNow widget -->
-<script src="https://api.itisnow.net/button.js" data-app-id="app_XnOUnf_n2Js1" data-onlogin="onItIsNowLogin"></script>
 
 <script>
   /* ── helpers ── */
@@ -420,39 +373,31 @@ a.orca-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,
   }
 
   function signOut() {
-    try { localStorage.removeItem('orca_user'); } catch (e) {}
+    try { localStorage.removeItem('orca_user'); } catch(e) {}
     window.__orcaUser = null;
-    document.getElementById('error-msg').textContent = '';
     closeModal();
     showAuthView();
   }
 
-  function openModal() {
-    document.getElementById('modal-backdrop').classList.add('open');
-  }
-  function closeModal() {
-    document.getElementById('modal-backdrop').classList.remove('open');
-  }
+  function openModal() { document.getElementById('modal-backdrop').classList.add('open'); }
+  function closeModal() { document.getElementById('modal-backdrop').classList.remove('open'); }
 
-  /* ── views ── */
   function showMainView() {
     var user = window.__orcaUser;
-    var name = (user && (user.username || user.email)) || 'user';
+    var name  = (user && (user.username || user.email)) || 'user';
     var email = (user && user.email) || '';
 
     document.getElementById('modal-username').textContent = name;
-    document.getElementById('modal-email').textContent = email;
+    document.getElementById('modal-email').textContent    = email;
     document.getElementById('avatar-initials').textContent = getInitials(name);
 
-    document.getElementById('auth-view').hidden = true;
-    document.getElementById('main-view').hidden = false;
-    document.documentElement.style.visibility = 'visible';
+    document.getElementById('auth-view').classList.remove('active');
+    document.getElementById('main-view').classList.add('active');
   }
 
   function showAuthView() {
-    document.getElementById('main-view').hidden = true;
-    document.getElementById('auth-view').hidden = false;
-    document.documentElement.style.visibility = 'visible';
+    document.getElementById('main-view').classList.remove('active');
+    document.getElementById('auth-view').classList.add('active');
   }
 
   /* ── ItIsNow callback ── */
@@ -464,7 +409,7 @@ a.orca-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,
         email: user.email,
         token: token
       }));
-    } catch (e) {
+    } catch(e) {
       document.getElementById('error-msg').textContent =
         'Could not save your session. Your browser may be blocking storage.';
       return;
@@ -485,9 +430,17 @@ a.orca-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,
     if (e.key === 'Escape') closeModal();
   });
 
-  /* ── boot ── */
-  if (window.__orcaUser) {
-    showMainView();
+  /* ── boot: check saved session ── */
+  var raw = null;
+  try { raw = localStorage.getItem('orca_user'); } catch(e) {}
+  if (raw) {
+    try {
+      window.__orcaUser = JSON.parse(raw);
+      showMainView();
+    } catch(e) {
+      window.__orcaUser = null;
+      showAuthView();
+    }
   } else {
     showAuthView();
   }
