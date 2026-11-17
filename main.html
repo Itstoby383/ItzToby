@@ -67,11 +67,11 @@ header {
   border-color: rgba(239,68,68,0.4);
 }
 
-/* Profile modal */
+/* ── Profile modal ── */
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0,0,0,0.65);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -84,44 +84,91 @@ header {
 .modal-backdrop.open { opacity: 1; pointer-events: all; }
 .modal {
   width: 100%;
-  max-width: 380px;
+  max-width: 400px;
   background: #111d38;
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 20px;
   padding: 2rem;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  transform: translateY(12px);
+  gap: 1.25rem;
+  transform: translateY(14px);
   transition: transform 0.2s;
 }
 .modal-backdrop.open .modal { transform: translateY(0); }
+
 .modal-header { display: flex; align-items: center; justify-content: space-between; }
-.modal-header h2 { font-size: 1.1rem; font-weight: 700; color: #fff; }
+.modal-header h2 { font-size: 1.05rem; font-weight: 700; color: #fff; }
 .close-btn {
-  width: 32px; height: 32px;
+  width: 30px; height: 30px;
   display: flex; align-items: center; justify-content: center;
   background: rgba(255,255,255,0.06);
   border: none; border-radius: 50%;
-  color: #94a3b8; cursor: pointer; font-size: 1.1rem;
+  color: #94a3b8; cursor: pointer; font-size: 1rem;
   transition: background 0.2s;
 }
 .close-btn:hover { background: rgba(255,255,255,0.12); }
+
+/* Avatar */
+.avatar-wrap { display: flex; justify-content: center; padding: 0.5rem 0; }
 .avatar {
-  width: 56px; height: 56px;
+  width: 72px; height: 72px;
   border-radius: 50%;
   background: linear-gradient(135deg, #6366f1, #8b5cf6);
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.4rem; font-weight: 700; color: #fff;
+  font-size: 1.75rem; font-weight: 700; color: #fff;
   flex-shrink: 0;
 }
-.profile-row { display: flex; align-items: center; gap: 1rem; }
-.profile-info { display: flex; flex-direction: column; gap: 0.2rem; }
-.profile-name { font-weight: 700; color: #fff; font-size: 1rem; }
-.profile-email { color: #64748b; font-size: 0.8rem; }
+
+/* Info rows */
+.info-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+}
+.info-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.info-row + .info-row { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.5rem; }
+.info-label { color: #64748b; font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+.info-value { color: #e2e8f0; font-size: 0.9rem; font-weight: 500; word-break: break-all; text-align: right; }
+
+/* Status badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: rgba(34,197,94,0.12);
+  color: #86efac;
+  border: 1px solid rgba(34,197,94,0.2);
+}
+.badge-dot { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; }
+
 .modal-divider { height: 1px; background: rgba(255,255,255,0.07); }
 
-/* Main content */
+/* Loading shimmer */
+.shimmer {
+  display: inline-block;
+  width: 100px; height: 0.9rem;
+  border-radius: 4px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* ── Main content ── */
 main {
   flex: 1;
   display: flex;
@@ -169,10 +216,8 @@ h1.page-title {
   background: #ef4444;
   animation: pulse 2s infinite;
 }
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
 .apps { display: flex; flex-direction: column; gap: 1rem; }
 .orca-card {
   display: flex;
@@ -214,16 +259,14 @@ a.orca-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,
 </head>
 <body>
 
-<!-- Guard: redirect to sign-in if no session -->
+<!-- Guard: bounce to sign-in if no stored session -->
 <script>
   (function() {
     var raw = null;
     try { raw = localStorage.getItem('orca_user'); } catch(e) {}
     if (!raw) { window.location.replace('index.html'); return; }
-    try {
-      var u = JSON.parse(raw);
-      if (!u || !u.id) { window.location.replace('index.html'); }
-    } catch(e) { window.location.replace('index.html'); }
+    try { if (!JSON.parse(raw).id) window.location.replace('index.html'); }
+    catch(e) { window.location.replace('index.html'); }
   })();
 </script>
 
@@ -273,17 +316,35 @@ a.orca-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,
 <div class="modal-backdrop" id="modal-backdrop" role="dialog" aria-modal="true" aria-label="Profile">
   <div class="modal">
     <div class="modal-header">
-      <h2>Your Profile</h2>
+      <h2>Profile</h2>
       <button class="close-btn" id="close-modal" aria-label="Close">✕</button>
     </div>
-    <div class="profile-row">
-      <div class="avatar" id="avatar-initials">?</div>
-      <div class="profile-info">
-        <span class="profile-name" id="modal-username">—</span>
-        <span class="profile-email" id="modal-email">—</span>
+
+    <div class="avatar-wrap">
+      <div class="avatar" id="avatar-initials">…</div>
+    </div>
+
+    <div class="info-block">
+      <div class="info-row">
+        <span class="info-label">Username</span>
+        <span class="info-value" id="p-username"><span class="shimmer"></span></span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Email</span>
+        <span class="info-value" id="p-email"><span class="shimmer"></span></span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">User ID</span>
+        <span class="info-value" id="p-id" style="font-size:0.78rem;color:#64748b"><span class="shimmer"></span></span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Status</span>
+        <span class="info-value"><span class="badge"><span class="badge-dot"></span>Active</span></span>
       </div>
     </div>
+
     <div class="modal-divider"></div>
+
     <button type="button" class="nav-btn logout" id="modal-logout-btn" style="width:100%;justify-content:center;">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
       Sign out
@@ -291,39 +352,93 @@ a.orca-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,
   </div>
 </div>
 
+<!-- ItIsNow: hidden, no button — just session management -->
+<script src="https://api.itisnow.net/button.js"
+        data-app-id="app_XnOUnf_n2Js1"
+        data-button="false"></script>
+
 <script>
+  var API = 'https://api.itisnow.net';
+
+  /* ── helpers ── */
   function getInitials(name) {
     if (!name) return '?';
     return name.trim().split(/\s+/).map(function(w){ return w[0]; }).join('').toUpperCase().slice(0,2);
   }
 
+  function fillProfile(user) {
+    var name = user.username || user.email || 'user';
+    document.getElementById('avatar-initials').textContent = getInitials(name);
+    document.getElementById('p-username').textContent = user.username || '—';
+    document.getElementById('p-email').textContent     = user.email    || '—';
+    document.getElementById('p-id').textContent        = user.id       || '—';
+  }
+
   function signOut() {
+    // Revoke token server-side via ItIsNow, clear our storage
+    var token = null;
+    try { token = JSON.parse(localStorage.getItem('orca_user')).token; } catch(e) {}
+    if (token) {
+      fetch(API + '/api/revoke', {
+        method: 'POST',
+        headers: { Authorization: 'Bearer ' + token }
+      }).catch(function(){});
+    }
     try { localStorage.removeItem('orca_user'); } catch(e) {}
     window.location.replace('index.html');
   }
 
-  function openModal() { document.getElementById('modal-backdrop').classList.add('open'); }
+  function openModal()  { document.getElementById('modal-backdrop').classList.add('open'); }
   function closeModal() { document.getElementById('modal-backdrop').classList.remove('open'); }
 
-  /* Populate profile from saved session */
-  var user = null;
-  try { user = JSON.parse(localStorage.getItem('orca_user')); } catch(e) {}
-  if (user) {
-    var name  = user.username || user.email || 'user';
-    var email = user.email || '';
-    document.getElementById('modal-username').textContent  = name;
-    document.getElementById('modal-email').textContent     = email;
-    document.getElementById('avatar-initials').textContent = getInitials(name);
+  /* ── Boot: load stored session then verify live from /api/me ── */
+  var stored = null;
+  try { stored = JSON.parse(localStorage.getItem('orca_user')); } catch(e) {}
+
+  if (stored) {
+    // Show cached data immediately
+    fillProfile(stored);
+
+    // Then fetch fresh data from the API
+    fetch(API + '/api/me', {
+      headers: { Authorization: 'Bearer ' + stored.token }
+    })
+    .then(function(r) {
+      if (r.status === 401) {
+        // Token expired — kick back to sign-in
+        try { localStorage.removeItem('orca_user'); } catch(e) {}
+        window.location.replace('index.html');
+        return null;
+      }
+      return r.json();
+    })
+    .then(function(data) {
+      if (!data) return;
+      var user = data.user || data;
+      // Merge fresh data back
+      var updated = {
+        id:       user.id       || stored.id,
+        username: user.username || stored.username,
+        email:    user.email    || stored.email,
+        token:    stored.token
+      };
+      try { localStorage.setItem('orca_user', JSON.stringify(updated)); } catch(e) {}
+      fillProfile(updated);
+    })
+    .catch(function() {
+      // Network issue — just keep showing cached data
+    });
   }
 
+  /* ── Events ── */
   document.getElementById('logout-btn').addEventListener('click', signOut);
   document.getElementById('modal-logout-btn').addEventListener('click', signOut);
   document.getElementById('profile-btn').addEventListener('click', openModal);
   document.getElementById('close-modal').addEventListener('click', closeModal);
-  document.getElementById('modal-backdrop').addEventListener('click', function(e){
+  document.getElementById('modal-backdrop').addEventListener('click', function(e) {
     if (e.target === this) closeModal();
   });
-  document.addEventListener('keydown', function(e){
+  document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') closeModal();
   });
 </script>

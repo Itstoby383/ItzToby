@@ -53,14 +53,6 @@ body {
 </head>
 <body>
 
-<!-- If already signed in, go straight to main -->
-<script>
-  try {
-    var s = localStorage.getItem('orca_user');
-    if (s && JSON.parse(s)) window.location.replace('main.html');
-  } catch(e) {}
-</script>
-
 <div class="login-card">
   <div class="brand-mark">itztoby</div>
   <div class="login-heading">
@@ -71,13 +63,16 @@ body {
 
   <script src="https://api.itisnow.net/button.js"
           data-app-id="app_XnOUnf_n2Js1"
-          data-onlogin="onItIsNowLogin"></script>
+          data-button="true"></script>
 
   <p class="error" id="error-msg"></p>
 </div>
 
 <script>
-  function onItIsNowLogin(user, token) {
+  // If session is restored (already signed in), go straight to main
+  window.addEventListener('itisnow:login', function(e) {
+    var user  = e.detail.user;
+    var token = e.detail.token;
     try {
       localStorage.setItem('orca_user', JSON.stringify({
         id: user.id,
@@ -85,13 +80,13 @@ body {
         email: user.email,
         token: token
       }));
-    } catch(e) {
+    } catch(err) {
       document.getElementById('error-msg').textContent =
         'Could not save your session. Your browser may be blocking storage.';
       return;
     }
-    window.location.href = 'main.html';
-  }
+    window.location.replace('main.html');
+  });
 </script>
 
 </body>
