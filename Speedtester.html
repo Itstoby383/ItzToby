@@ -18,13 +18,11 @@
   --text: #e8edf5;
   --muted: #64748b;
   --cyan: #00e0ff;
-  --cyan-dim: rgba(0,224,255,0.1);
+  --cyan-dim: rgba(0,224,255,0.08);
   --cyan-border: rgba(0,224,255,0.2);
 }
 
-html, body {
-  height: 100%;
-}
+html, body { height: 100%; }
 
 body {
   font-family: 'Inter', system-ui, sans-serif;
@@ -38,7 +36,7 @@ body {
 /* ── NAV ── */
 nav {
   position: sticky; top: 0; z-index: 50;
-  background: rgba(7,13,26,0.9);
+  background: rgba(7,13,26,0.92);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
@@ -65,20 +63,51 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 3rem 1.5rem;
-  gap: 2.5rem;
+  padding: 2rem 1.5rem 3rem;
+  gap: 0;
 }
 
-/* ── GAUGE ── */
+/* ── SERVER INFO ── */
+.server-row {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.server-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  background: var(--bg2);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+.server-pill span { color: #94a3b8; }
+.server-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); flex-shrink: 0; }
+
+/* ── GAUGE CONTAINER ── */
+.gauge-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+}
+
 .gauge-wrap {
   position: relative;
-  width: 280px;
-  height: 240px;
+  width: 420px;
+  height: 360px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
+
 .gauge-svg {
   position: absolute;
   inset: 0;
@@ -87,189 +116,188 @@ main {
   overflow: visible;
 }
 
-/* Track arc */
-.gauge-track {
-  fill: none;
-  stroke: rgba(255,255,255,0.06);
-  stroke-width: 14;
-  stroke-linecap: round;
-  /* r=110, 270° arc: 2π×110×0.75 ≈ 518 */
-  stroke-dasharray: 518 10000;
-  transform-origin: 140px 130px;
-  transform: rotate(135deg);
+/* Phase tabs above gauge */
+.phase-tabs {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 0.75rem;
 }
-/* Fill arc */
-.gauge-fill {
-  fill: none;
-  stroke: var(--cyan);
-  stroke-width: 14;
-  stroke-linecap: round;
-  stroke-dasharray: 518 10000;
-  stroke-dashoffset: 518;
-  transform-origin: 140px 130px;
-  transform: rotate(135deg);
-  transition: stroke-dashoffset 0.15s linear;
-  filter: drop-shadow(0 0 8px rgba(0,224,255,0.5));
+.phase-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  opacity: 0.3;
+  transition: opacity 0.3s;
 }
-/* Glow outer ring */
-.gauge-glow {
-  fill: none;
-  stroke: var(--cyan);
-  stroke-width: 2;
-  opacity: 0;
-  stroke-dasharray: 518 10000;
-  stroke-dashoffset: 518;
-  transform-origin: 140px 130px;
-  transform: rotate(135deg);
-  transition: stroke-dashoffset 0.15s linear, opacity 0.3s;
-  filter: blur(4px);
+.phase-tab.active { opacity: 1; }
+.phase-tab.done { opacity: 0.6; }
+.phase-tab-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--muted);
+  transition: background 0.3s;
 }
+.phase-tab.active .phase-tab-dot { background: var(--cyan); }
+.phase-tab.done .phase-tab-dot { background: #22c55e; }
+.phase-tab-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.phase-tab.active .phase-tab-label { color: var(--cyan); }
+.phase-tab.done .phase-tab-label { color: #22c55e; }
 
+/* Gauge center overlay */
 .gauge-center {
   position: relative;
   z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: -20px;
+  margin-top: -40px;
+  pointer-events: none;
+  user-select: none;
 }
 .gauge-number {
-  font-size: 3.5rem;
+  font-size: 5.5rem;
   font-weight: 900;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.05em;
   color: #fff;
   line-height: 1;
   font-variant-numeric: tabular-nums;
-  min-width: 140px;
+  min-width: 200px;
   text-align: center;
 }
 .gauge-unit {
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--muted);
-  margin-top: 0.3rem;
+  margin-top: 0.5rem;
 }
-
-/* ── PHASE ── */
-.phase-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.4rem;
-}
-.phase-label {
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+.gauge-phase-text {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--cyan);
-  min-height: 1em;
+  margin-top: 0.75rem;
+  min-height: 1.2em;
+  opacity: 0;
+  transition: opacity 0.3s;
 }
-.phase-sub {
-  font-size: 0.82rem;
-  color: var(--muted);
-  min-height: 1em;
-}
+.gauge-phase-text.visible { opacity: 1; }
 
-/* ── START BUTTON ── */
-.start-btn {
-  width: 90px; height: 90px;
+/* Go button — sits just below gauge */
+.go-btn-wrap {
+  margin-top: -24px;
+  position: relative;
+  z-index: 3;
+}
+.go-btn {
+  width: 80px; height: 80px;
   border-radius: 50%;
   border: 2px solid var(--cyan);
   background: var(--cyan-dim);
   color: var(--cyan);
   font-family: inherit;
-  font-size: 1rem;
-  font-weight: 800;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  font-size: 1.1rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
   cursor: pointer;
   transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-  box-shadow: 0 0 0 0 rgba(0,224,255,0);
+  position: relative;
 }
-.start-btn:hover:not(:disabled) {
-  background: rgba(0,224,255,0.18);
-  transform: scale(1.05);
-  box-shadow: 0 0 24px rgba(0,224,255,0.25);
+.go-btn::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,224,255,0.15);
 }
-.start-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
+.go-btn:hover:not(:disabled) {
+  background: rgba(0,224,255,0.16);
+  transform: scale(1.06);
+  box-shadow: 0 0 32px rgba(0,224,255,0.22);
 }
-.start-btn.testing {
-  animation: btn-pulse 1.5s ease-in-out infinite;
-}
-@keyframes btn-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(0,224,255,0.3); }
-  50% { box-shadow: 0 0 0 12px rgba(0,224,255,0); }
+.go-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.go-btn.running { animation: ring-pulse 1.4s ease-in-out infinite; }
+@keyframes ring-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0,224,255,0.25); }
+  50%       { box-shadow: 0 0 0 14px rgba(0,224,255,0); }
 }
 
 /* ── RESULTS ── */
-.results {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1px;
+.results-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0;
   width: 100%;
-  max-width: 480px;
+  max-width: 520px;
+  margin-top: 2.5rem;
   border: 1px solid var(--border);
   border-radius: 10px;
   overflow: hidden;
   background: var(--border);
 }
-.result-card {
+.result-block {
+  flex: 1;
   background: var(--bg2);
-  padding: 1.25rem 1rem;
+  padding: 1.5rem 1.25rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.25rem;
 }
+.result-block + .result-block { border-left: 1px solid var(--border); }
 .result-label {
-  font-size: 0.65rem;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.r-icon { opacity: 0.5; }
+.result-value {
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+  transition: color 0.4s;
+  line-height: 1.1;
+}
+.result-value.lit { color: var(--cyan); }
+.result-unit {
+  font-size: 0.6rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--muted);
 }
-.result-value {
-  font-size: 1.5rem;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  color: #fff;
-  font-variant-numeric: tabular-nums;
-  transition: color 0.3s;
-}
-.result-value.ready { color: var(--cyan); }
-.result-unit {
-  font-size: 0.65rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-/* ── SERVER INFO ── */
-.server-info {
-  font-size: 0.75rem;
-  color: var(--muted);
-  text-align: center;
-}
-.server-info span { color: #94a3b8; }
 
 /* ── FOOTER ── */
 footer {
   border-top: 1px solid var(--border);
-  padding: 1.2rem 1.5rem;
+  padding: 1rem 1.5rem;
   text-align: center;
   font-size: 0.72rem;
   color: var(--muted);
 }
 
-@media (max-width: 480px) {
-  .gauge-number { font-size: 2.75rem; }
-  .start-btn { width: 76px; height: 76px; font-size: 0.88rem; }
+/* ── RESPONSIVE ── */
+@media (max-width: 500px) {
+  .gauge-wrap { width: 320px; height: 280px; }
+  .gauge-number { font-size: 4rem; }
+  .go-btn { width: 68px; height: 68px; font-size: 0.95rem; }
+  .result-value { font-size: 1.6rem; }
 }
 </style>
 </head>
@@ -297,229 +325,395 @@ footer {
 </nav>
 
 <main>
-  <!-- Gauge -->
-  <div class="gauge-wrap">
-    <svg class="gauge-svg" viewBox="0 0 280 240">
-      <!-- Track -->
-      <circle class="gauge-track" cx="140" cy="130" r="110"/>
-      <!-- Outer glow -->
-      <circle class="gauge-glow" id="gauge-glow" cx="140" cy="130" r="110"/>
-      <!-- Fill -->
-      <circle class="gauge-fill" id="gauge-fill" cx="140" cy="130" r="110"/>
-    </svg>
-    <div class="gauge-center">
-      <div class="gauge-number" id="gauge-number">—</div>
-      <div class="gauge-unit" id="gauge-unit">Mbps</div>
+
+  <!-- Server info -->
+  <div class="server-row">
+    <div class="server-pill">
+      <span class="server-dot"></span>
+      Server: <span id="server-colo">Cloudflare</span>
+    </div>
+    <div class="server-pill" id="isp-pill" style="display:none">
+      ISP: <span id="server-isp">—</span>
     </div>
   </div>
 
-  <!-- Phase info -->
-  <div class="phase-wrap">
-    <div class="phase-label" id="phase-label"></div>
-    <div class="phase-sub" id="phase-sub">Powered by Cloudflare</div>
+  <!-- Phase tabs -->
+  <div class="phase-tabs">
+    <div class="phase-tab" id="tab-ping">
+      <div class="phase-tab-dot"></div>
+      <div class="phase-tab-label">Ping</div>
+    </div>
+    <div class="phase-tab" id="tab-dl">
+      <div class="phase-tab-dot"></div>
+      <div class="phase-tab-label">Download</div>
+    </div>
+    <div class="phase-tab" id="tab-ul">
+      <div class="phase-tab-dot"></div>
+      <div class="phase-tab-label">Upload</div>
+    </div>
   </div>
 
-  <!-- Start button -->
-  <button class="start-btn" id="start-btn">GO</button>
+  <div class="gauge-section">
+    <div class="gauge-wrap">
+
+      <!-- SVG Gauge -->
+      <!-- viewBox 420×360, center 210,190, r=160 -->
+      <!-- 240° arc: 2π×160×(240/360) ≈ 670.2 -->
+      <!-- Rotate start to 150° (bottom-left), sweep 240° to 30° (bottom-right) -->
+      <svg class="gauge-svg" viewBox="0 0 420 360">
+        <defs>
+          <!-- Tick mark group template -->
+        </defs>
+
+        <!-- Outer decorative ring -->
+        <circle cx="210" cy="190" r="168"
+          fill="none"
+          stroke="rgba(255,255,255,0.03)"
+          stroke-width="1"/>
+
+        <!-- Scale ticks — 24 ticks over 240° arc -->
+        <g id="ticks" transform="rotate(150, 210, 190)"></g>
+
+        <!-- Track arc: r=160, 240° -->
+        <circle id="gauge-track" cx="210" cy="190" r="160"
+          fill="none"
+          stroke="rgba(255,255,255,0.07)"
+          stroke-width="10"
+          stroke-linecap="round"
+          stroke-dasharray="670 10000"
+          transform="rotate(150, 210, 190)"/>
+
+        <!-- Glow arc (blurred duplicate) -->
+        <circle id="gauge-glow" cx="210" cy="190" r="160"
+          fill="none"
+          stroke="#00e0ff"
+          stroke-width="16"
+          stroke-linecap="round"
+          stroke-dasharray="670 10000"
+          stroke-dashoffset="670"
+          transform="rotate(150, 210, 190)"
+          opacity="0"
+          filter="url(#blur)"/>
+
+        <!-- Fill arc: animates -->
+        <circle id="gauge-fill" cx="210" cy="190" r="160"
+          fill="none"
+          stroke="#00e0ff"
+          stroke-width="10"
+          stroke-linecap="round"
+          stroke-dasharray="670 10000"
+          stroke-dashoffset="670"
+          transform="rotate(150, 210, 190)"
+          style="transition: stroke-dashoffset 0.12s linear; filter: drop-shadow(0 0 6px rgba(0,224,255,0.6));"/>
+
+        <defs>
+          <filter id="blur">
+            <feGaussianBlur stdDeviation="6"/>
+          </filter>
+        </defs>
+      </svg>
+
+      <!-- Center overlay -->
+      <div class="gauge-center">
+        <div class="gauge-number" id="gauge-number">—</div>
+        <div class="gauge-unit" id="gauge-unit">Mbps</div>
+        <div class="gauge-phase-text" id="gauge-phase">—</div>
+      </div>
+
+    </div>
+
+    <!-- GO button -->
+    <div class="go-btn-wrap">
+      <button class="go-btn" id="go-btn">GO</button>
+    </div>
+  </div>
 
   <!-- Results -->
-  <div class="results">
-    <div class="result-card">
-      <div class="result-label">Ping</div>
+  <div class="results-row">
+    <div class="result-block">
+      <div class="result-label">
+        <svg class="r-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Ping
+      </div>
       <div class="result-value" id="res-ping">—</div>
       <div class="result-unit">ms</div>
     </div>
-    <div class="result-card">
-      <div class="result-label">Download</div>
+    <div class="result-block">
+      <div class="result-label">
+        <svg class="r-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12l10 10 10-10"/></svg>
+        Download
+      </div>
       <div class="result-value" id="res-dl">—</div>
       <div class="result-unit">Mbps</div>
     </div>
-    <div class="result-card">
-      <div class="result-label">Upload</div>
+    <div class="result-block">
+      <div class="result-label">
+        <svg class="r-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V2M2 12l10-10 10 10"/></svg>
+        Upload
+      </div>
       <div class="result-value" id="res-ul">—</div>
       <div class="result-unit">Mbps</div>
     </div>
   </div>
 
-  <div class="server-info">Test server: <span>Cloudflare (speed.cloudflare.com)</span></div>
 </main>
 
-<footer>itztoby speed test &mdash; results may vary based on network conditions</footer>
+<footer>itztoby speed test &mdash; powered by Cloudflare</footer>
 
 <script>
-  var CF = 'https://speed.cloudflare.com';
-  var ARC = 518; // 270° arc length for r=110
+var CF  = 'https://speed.cloudflare.com';
+var ARC = 670; // 240° arc for r=160
 
-  var gaugeEl   = document.getElementById('gauge-fill');
-  var glowEl    = document.getElementById('gauge-glow');
-  var numEl     = document.getElementById('gauge-number');
-  var unitEl    = document.getElementById('gauge-unit');
-  var phaseEl   = document.getElementById('phase-label');
-  var subEl     = document.getElementById('phase-sub');
-  var startBtn  = document.getElementById('start-btn');
-  var resPing   = document.getElementById('res-ping');
-  var resDl     = document.getElementById('res-dl');
-  var resUl     = document.getElementById('res-ul');
+/* ── DOM refs ── */
+var fillEl    = document.getElementById('gauge-fill');
+var glowEl    = document.getElementById('gauge-glow');
+var numEl     = document.getElementById('gauge-number');
+var unitEl    = document.getElementById('gauge-unit');
+var phaseEl   = document.getElementById('gauge-phase');
+var goBtn     = document.getElementById('go-btn');
+var resPing   = document.getElementById('res-ping');
+var resDl     = document.getElementById('res-dl');
+var resUl     = document.getElementById('res-ul');
+var tabPing   = document.getElementById('tab-ping');
+var tabDl     = document.getElementById('tab-dl');
+var tabUl     = document.getElementById('tab-ul');
 
-  var MAX_MBPS = 300; // full gauge at this speed
-
-  function setGauge(mbps) {
-    var clamped = Math.min(mbps, MAX_MBPS);
-    var progress = clamped / MAX_MBPS;
-    var offset = ARC * (1 - progress);
-    gaugeEl.style.strokeDashoffset = offset;
-    glowEl.style.strokeDashoffset  = offset;
-    glowEl.style.opacity = mbps > 0 ? '0.4' : '0';
-    numEl.textContent = mbps >= 10 ? Math.round(mbps) : mbps.toFixed(1);
+/* ── Draw ticks ── */
+(function drawTicks() {
+  var g = document.getElementById('ticks');
+  var cx = 210, cy = 190, r = 160;
+  var total = 24;
+  var arc = 240;
+  for (var i = 0; i <= total; i++) {
+    var angle = (arc / total) * i;
+    var rad   = angle * Math.PI / 180;
+    var isMajor = i % 6 === 0;
+    var inner = r - (isMajor ? 16 : 9);
+    var outer = r - 2;
+    var x1 = cx + inner * Math.cos(rad);
+    var y1 = cy + inner * Math.sin(rad);
+    var x2 = cx + outer * Math.cos(rad);
+    var y2 = cy + outer * Math.sin(rad);
+    var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', x1); line.setAttribute('y1', y1);
+    line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+    line.setAttribute('stroke', isMajor ? 'rgba(255,255,255,0.18)' : 'rgba(255,255,255,0.08)');
+    line.setAttribute('stroke-width', isMajor ? '2' : '1');
+    line.setAttribute('stroke-linecap', 'round');
+    g.appendChild(line);
   }
+})();
 
-  function resetGauge() {
-    gaugeEl.style.strokeDashoffset = ARC;
-    glowEl.style.strokeDashoffset  = ARC;
-    glowEl.style.opacity = '0';
+/* ── Gauge helpers ── */
+// Log scale so lower speeds still show visible movement
+function speedToProgress(mbps) {
+  if (mbps <= 0) return 0;
+  // log scale: 0→0, 1→~0.15, 10→~0.33, 50→~0.55, 100→~0.67, 500→~0.9, 1000→1
+  var val = Math.log(mbps + 1) / Math.log(1001);
+  return Math.min(val, 1);
+}
+
+function setGauge(mbps) {
+  var p = speedToProgress(mbps);
+  var offset = ARC * (1 - p);
+  fillEl.setAttribute('stroke-dashoffset', offset);
+  glowEl.setAttribute('stroke-dashoffset', offset);
+  glowEl.setAttribute('opacity', mbps > 0 ? '0.25' : '0');
+
+  if (mbps <= 0) {
     numEl.textContent = '—';
+  } else if (mbps < 10) {
+    numEl.textContent = mbps.toFixed(2);
+  } else if (mbps < 100) {
+    numEl.textContent = mbps.toFixed(1);
+  } else {
+    numEl.textContent = Math.round(mbps);
   }
+}
 
-  function sleep(ms) {
-    return new Promise(function(r) { setTimeout(r, ms); });
-  }
+function resetGauge() {
+  fillEl.setAttribute('stroke-dashoffset', ARC);
+  glowEl.setAttribute('stroke-dashoffset', ARC);
+  glowEl.setAttribute('opacity', '0');
+  numEl.textContent = '—';
+}
 
-  /* ── Ping ── */
-  async function measurePing() {
-    phaseEl.textContent = 'Ping';
-    subEl.textContent = 'Measuring latency...';
-    unitEl.textContent = 'ms';
-    var times = [];
-    for (var i = 0; i < 5; i++) {
-      var t0 = performance.now();
-      try {
-        await fetch(CF + '/__down?bytes=0&_=' + Date.now(), { cache: 'no-store' });
-      } catch(e) {}
-      times.push(performance.now() - t0);
-      await sleep(150);
-    }
-    times.sort(function(a,b){ return a-b; });
-    var trimmed = times.slice(1, 4);
-    var avg = trimmed.reduce(function(a,b){ return a+b; }, 0) / trimmed.length;
-    var ping = Math.round(avg);
-    setGauge(Math.min(ping * 0.5, MAX_MBPS)); // visual only
-    resPing.textContent = ping;
-    resPing.classList.add('ready');
-    unitEl.textContent = 'Mbps';
-    return ping;
-  }
+function setPhaseTab(active) {
+  [tabPing, tabDl, tabUl].forEach(function(t) { t.className = 'phase-tab'; });
+  if (active === 'ping') { tabPing.classList.add('active'); }
+  if (active === 'dl')   { tabDl.classList.add('active'); }
+  if (active === 'ul')   { tabUl.classList.add('active'); }
+}
+function doneTab(tab) { tab.classList.remove('active'); tab.classList.add('done'); }
 
-  /* ── Download ── */
-  async function measureDownload() {
-    phaseEl.textContent = 'Download';
-    subEl.textContent = 'Testing download speed...';
-    resetGauge();
-    unitEl.textContent = 'Mbps';
+function setPhaseText(txt) {
+  phaseEl.textContent = txt;
+  phaseEl.className = 'gauge-phase-text' + (txt ? ' visible' : '');
+}
 
-    // Warmup
-    try { await fetch(CF + '/__down?bytes=102400&_=' + Date.now(), { cache: 'no-store' }); } catch(e) {}
+function fmt(mbps) {
+  if (!mbps || mbps <= 0) return '—';
+  if (mbps < 10)  return mbps.toFixed(2);
+  if (mbps < 100) return mbps.toFixed(1);
+  return String(Math.round(mbps));
+}
 
-    var url = CF + '/__down?bytes=25000000&_=' + Date.now();
+function sleep(ms) { return new Promise(function(r) { setTimeout(r, ms); }); }
+
+/* ── Server info ── */
+fetch('https://www.cloudflare.com/cdn-cgi/trace')
+  .then(function(r) { return r.text(); })
+  .then(function(txt) {
+    var colo = (txt.match(/colo=(\w+)/) || [])[1];
+    var loc  = (txt.match(/loc=(\w+)/)  || [])[1];
+    if (colo) document.getElementById('server-colo').textContent = 'Cloudflare ' + colo + (loc ? ' (' + loc + ')' : '');
+  }).catch(function() {});
+
+/* ── Ping ── */
+async function measurePing() {
+  setPhaseTab('ping');
+  setPhaseText('Measuring ping');
+  unitEl.textContent = 'ms';
+  var times = [];
+  for (var i = 0; i < 6; i++) {
     var t0 = performance.now();
-    var response;
-    try {
-      response = await fetch(url, { cache: 'no-store' });
-    } catch(e) { return 0; }
+    try { await fetch(CF + '/__down?bytes=0&_=' + Date.now(), { cache: 'no-store' }); }
+    catch(e) {}
+    times.push(performance.now() - t0);
+    // Show live ping on gauge
+    if (times.length > 1) {
+      var cur = times[times.length - 1];
+      setGauge(Math.max(0, 150 - cur)); // visual only: invert so low ping = high
+      numEl.textContent = Math.round(cur);
+    }
+    await sleep(180);
+  }
+  times.sort(function(a, b) { return a - b; });
+  var trimmed = times.slice(1, 5);
+  var avg = Math.round(trimmed.reduce(function(a, b) { return a + b; }, 0) / trimmed.length);
+  resPing.textContent = avg;
+  resPing.classList.add('lit');
+  doneTab(tabPing);
+  unitEl.textContent = 'Mbps';
+  return avg;
+}
 
-    var reader = response.body.getReader();
-    var bytes = 0;
+/* ── Download ── */
+async function measureDownload() {
+  setPhaseTab('dl');
+  setPhaseText('Download');
+  resetGauge();
+  unitEl.textContent = 'Mbps';
+
+  // Warmup request
+  try { await fetch(CF + '/__down?bytes=204800&_=' + Date.now(), { cache: 'no-store' }); } catch(e) {}
+
+  var url = CF + '/__down?bytes=35000000&_=' + Date.now();
+  var t0 = performance.now();
+  var response;
+  try { response = await fetch(url, { cache: 'no-store' }); }
+  catch(e) { return 0; }
+
+  var reader = response.body.getReader();
+  var bytes = 0;
+  var peak  = 0;
+  var SKIP  = 500; // skip first 500ms (connection overhead)
+
+  while (true) {
+    var chunk;
+    try { chunk = await reader.read(); } catch(e) { break; }
+    if (chunk.done) break;
+    bytes += chunk.value.length;
+    var elapsed = performance.now() - t0;
+    if (elapsed > SKIP) {
+      var mbps = (bytes * 8) / (elapsed / 1000) / 1e6;
+      if (mbps > peak) peak = mbps;
+      setGauge(mbps);
+    }
+  }
+
+  resDl.textContent = fmt(peak);
+  resDl.classList.add('lit');
+  doneTab(tabDl);
+  return peak;
+}
+
+/* ── Upload ── */
+async function measureUpload() {
+  setPhaseTab('ul');
+  setPhaseText('Upload');
+  resetGauge();
+  unitEl.textContent = 'Mbps';
+
+  var size = 12 * 1024 * 1024; // 12MB
+  var buf  = new Uint8Array(size);
+  if (window.crypto && crypto.getRandomValues) {
+    crypto.getRandomValues(buf.subarray(0, Math.min(65536, size)));
+  }
+
+  return new Promise(function(resolve) {
+    var t0 = performance.now();
     var peak = 0;
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', CF + '/__up', true);
 
-    while (true) {
-      var result;
-      try { result = await reader.read(); } catch(e) { break; }
-      if (result.done) break;
-      bytes += result.value.length;
-      var secs = (performance.now() - t0) / 1000;
-      if (secs > 0.5) { // skip first half second (connection overhead)
-        var mbps = (bytes * 8) / secs / 1e6;
-        if (mbps > peak) peak = mbps;
-        setGauge(mbps);
-      }
+    xhr.upload.onprogress = function(e) {
+      if (!e.lengthComputable) return;
+      var elapsed = performance.now() - t0;
+      if (elapsed < 300) return;
+      var mbps = (e.loaded * 8) / (elapsed / 1000) / 1e6;
+      if (mbps > peak) peak = mbps;
+      setGauge(mbps);
+    };
+
+    function finish() {
+      var elapsed = (performance.now() - t0) / 1000;
+      var mbps = elapsed > 0 ? Math.max(peak, (size * 8) / elapsed / 1e6) : 0;
+      resUl.textContent = fmt(mbps);
+      resUl.classList.add('lit');
+      doneTab(tabUl);
+      resolve(mbps);
     }
 
-    resDl.textContent = peak >= 10 ? Math.round(peak) : peak.toFixed(1);
-    resDl.classList.add('ready');
-    return peak;
-  }
+    xhr.onload = xhr.onerror = xhr.ontimeout = finish;
+    xhr.timeout = 25000;
+    xhr.send(buf.buffer);
+  });
+}
 
-  /* ── Upload ── */
-  async function measureUpload() {
-    phaseEl.textContent = 'Upload';
-    subEl.textContent = 'Testing upload speed...';
-    resetGauge();
-    unitEl.textContent = 'Mbps';
+/* ── Run ── */
+async function runTest() {
+  goBtn.disabled = true;
+  goBtn.textContent = '•••';
+  goBtn.classList.add('running');
 
-    var size = 10 * 1024 * 1024; // 10MB
-    var data = new Uint8Array(size);
-    // Randomise a chunk to avoid compression
-    if (crypto && crypto.getRandomValues) {
-      crypto.getRandomValues(data.subarray(0, Math.min(65536, size)));
-    }
+  resPing.textContent = '—'; resPing.classList.remove('lit');
+  resDl.textContent   = '—'; resDl.classList.remove('lit');
+  resUl.textContent   = '—'; resUl.classList.remove('lit');
+  [tabPing, tabDl, tabUl].forEach(function(t) { t.className = 'phase-tab'; });
+  resetGauge();
 
-    return new Promise(function(resolve) {
-      var t0 = performance.now();
-      var xhr = new XMLHttpRequest();
-      xhr.open('POST', CF + '/__up', true);
+  try {
+    await measurePing();
+    setGauge(0);
+    await sleep(500);
 
-      xhr.upload.onprogress = function(e) {
-        if (!e.lengthComputable) return;
-        var secs = (performance.now() - t0) / 1000;
-        if (secs < 0.3) return;
-        var mbps = (e.loaded * 8) / secs / 1e6;
-        setGauge(mbps);
-      };
+    await measureDownload();
+    setGauge(0);
+    await sleep(500);
 
-      xhr.onload = xhr.onerror = xhr.ontimeout = function() {
-        var secs = (performance.now() - t0) / 1000;
-        var mbps = secs > 0 ? (size * 8) / secs / 1e6 : 0;
-        resUl.textContent = mbps >= 10 ? Math.round(mbps) : mbps.toFixed(1);
-        resUl.classList.add('ready');
-        resolve(mbps);
-      };
+    await measureUpload();
+  } catch(e) { console.error(e); }
 
-      xhr.timeout = 20000;
-      xhr.send(data.buffer);
-    });
-  }
+  setPhaseText('Complete');
+  resetGauge();
+  numEl.textContent = '—';
+  goBtn.disabled = false;
+  goBtn.textContent = 'GO';
+  goBtn.classList.remove('running');
+}
 
-  /* ── Run test ── */
-  async function runTest() {
-    startBtn.disabled = true;
-    startBtn.textContent = '...';
-    startBtn.classList.add('testing');
-
-    // Reset
-    resPing.textContent = '—'; resPing.classList.remove('ready');
-    resDl.textContent   = '—'; resDl.classList.remove('ready');
-    resUl.textContent   = '—'; resUl.classList.remove('ready');
-    resetGauge();
-
-    try {
-      await measurePing();
-      await sleep(400);
-      await measureDownload();
-      await sleep(400);
-      await measureUpload();
-    } catch(err) {
-      console.error(err);
-    }
-
-    phaseEl.textContent = 'Done';
-    subEl.textContent = 'Test complete';
-    startBtn.disabled = false;
-    startBtn.textContent = 'GO';
-    startBtn.classList.remove('testing');
-    resetGauge();
-    numEl.textContent = '—';
-  }
-
-  startBtn.addEventListener('click', runTest);
+goBtn.addEventListener('click', runTest);
 </script>
 
 </body>
