@@ -750,8 +750,8 @@ footer {
       var table = document.getElementById('users-table');
       var docs = (data && (data.docs || data.items || data.data)) || [];
 
-      // Flatten — some APIs wrap in { doc: {...} }
-      docs = docs.map(function(d) { return d.doc || d; });
+      // Flatten — ItIsNow wraps each doc's payload under .data or .doc
+      docs = docs.map(function(d) { return d.data || d.doc || d; });
 
       document.getElementById('users-count').innerHTML =
         '<span>' + docs.length + '</span> user' + (docs.length !== 1 ? 's' : '') + ' registered';
