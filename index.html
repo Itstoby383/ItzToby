@@ -102,13 +102,12 @@ body {
       return;
     }
 
-    // Record this user in the shared users collection
+    // Record this user in the shared app-level users collection (no bearer = app-scoped)
     fetch('https://api.itisnow.net/api/data/users/' + encodeURIComponent(user.id), {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'X-App-Id': 'app_XnOUnf_n2Js1',
-        'Authorization': 'Bearer ' + token
+        'X-App-Id': 'app_XnOUnf_n2Js1'
       },
       body: JSON.stringify({
         id: user.id,
