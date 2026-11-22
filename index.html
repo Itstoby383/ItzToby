@@ -53,6 +53,22 @@ body {
 </head>
 <body>
 
+<!-- If already signed in, skip straight to main before anything renders -->
+<script>
+  (function() {
+    // Check our own key first
+    try {
+      var s = localStorage.getItem('orca_user');
+      if (s && JSON.parse(s).id) { window.location.replace('main.html'); return; }
+    } catch(e) {}
+    // Also check ItIsNow's native key as fallback
+    try {
+      var k = localStorage.getItem('itisnow_session_app_XnOUnf_n2Js1');
+      if (k && JSON.parse(k).token) { window.location.replace('main.html'); return; }
+    } catch(e) {}
+  })();
+</script>
+
 <div class="login-card">
   <div class="brand-mark">itztoby</div>
   <div class="login-heading">
@@ -69,10 +85,10 @@ body {
 </div>
 
 <script>
-  // If session is restored (already signed in), go straight to main
   window.addEventListener('itisnow:login', function(e) {
     var user  = e.detail.user;
     var token = e.detail.token;
+
     try {
       localStorage.setItem('orca_user', JSON.stringify({
         id: user.id,
@@ -85,7 +101,24 @@ body {
         'Could not save your session. Your browser may be blocking storage.';
       return;
     }
-    window.location.replace('main.html');
+
+    // Record this user in the shared users collection
+    fetch('https://api.itisnow.net/api/data/users/' + encodeURIComponent(user.id), {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-App-Id': 'app_XnOUnf_n2Js1',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify({
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        lastSeen: new Date().toISOString()
+      })
+    }).catch(function() {}).finally(function() {
+      window.location.replace('main.html');
+    });
   });
 </script>
 
