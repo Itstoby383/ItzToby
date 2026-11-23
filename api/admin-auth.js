@@ -8,7 +8,7 @@ function sign(payload) {
   return Buffer.from(data).toString('base64url') + '.' + mac;
 }
 
-export default function handler(req, res) {
+module.exports = function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -18,8 +18,8 @@ export default function handler(req, res) {
 
   const { email, password } = req.body || {};
 
-  const validEmail    = process.env.Tobz@itztoby.co.uk;
-  const validPassword = process.env.Itstoby383!;
+  const validEmail    = process.env.ADMIN_EMAIL;
+  const validPassword = process.env.ADMIN_PASSWORD;
 
   if (!validEmail || !validPassword) {
     return res.status(500).json({ error: 'Admin credentials not configured on server.' });
@@ -35,4 +35,4 @@ export default function handler(req, res) {
 
   const token = sign({ role: 'admin', iat: Date.now() });
   return res.status(200).json({ token });
-}
+};
