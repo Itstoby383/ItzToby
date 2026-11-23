@@ -81,13 +81,28 @@ body {
           data-app-id="app_XnOUnf_n2Js1"
           data-button="true"></script>
 
+  <div class="cf-turnstile" id="turnstile-widget"
+       data-sitekey="0x4AAAAAAGPjfmnPHGBPTbSH"
+       data-theme="dark"
+       data-size="flexible"></div>
+
   <p class="error" id="error-msg"></p>
 </div>
+
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
 <script>
   window.addEventListener('itisnow:login', function(e) {
     var user  = e.detail.user;
     var token = e.detail.token;
+
+    // Block if CAPTCHA not completed
+    var captchaOk = false;
+    try { captchaOk = !!(window.turnstile && window.turnstile.getResponse()); } catch(err) {}
+    if (!captchaOk) {
+      document.getElementById('error-msg').textContent = 'Please complete the CAPTCHA first.';
+      return;
+    }
 
     try {
       localStorage.setItem('orca_user', JSON.stringify({
