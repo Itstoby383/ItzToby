@@ -146,6 +146,96 @@ main { max-width: 900px; margin: 0 auto; padding: 2.5rem 1.5rem; display: flex; 
   margin-bottom: 1rem;
 }
 
+/* news form */
+.news-form {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.form-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+.field-wrap { display: flex; flex-direction: column; gap: 0.4rem; flex: 1; }
+.field-wrap label { font-size: 0.75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.field-wrap input, .field-wrap textarea {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.9rem;
+  padding: 0.6rem 0.9rem;
+  outline: none;
+  resize: vertical;
+  transition: border-color 0.2s;
+}
+.field-wrap input:focus, .field-wrap textarea:focus { border-color: var(--cyan); }
+.btn-post {
+  align-self: flex-start;
+  background: var(--cyan);
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  padding: 0.6rem 1.4rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.btn-post:hover { opacity: 0.85; }
+.btn-post:disabled { opacity: 0.5; cursor: not-allowed; }
+.post-status { font-size: 0.82rem; min-height: 1.1em; }
+.post-status.ok { color: var(--cyan); }
+.post-status.err { color: #fca5a5; }
+.btn-refresh {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.65rem;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+.btn-refresh:hover { color: #fff; border-color: rgba(255,255,255,0.2); }
+
+/* news table */
+.news-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-top: 1px solid var(--border);
+}
+.news-row:first-child { border-top: none; }
+.news-row-title { font-size: 0.9rem; font-weight: 600; color: #fff; }
+.news-row-tag {
+  font-size: 0.65rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 0.15rem 0.5rem; border-radius: 4px;
+  background: var(--cyan-dim); color: var(--cyan); border: 1px solid rgba(0,224,255,0.25);
+  white-space: nowrap;
+}
+.btn-delete {
+  background: transparent;
+  border: 1px solid rgba(239,68,68,0.25);
+  border-radius: 6px;
+  color: var(--red);
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.65rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+.btn-delete:hover { background: rgba(239,68,68,0.12); }
+
 /* stats row */
 .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; }
 .stat-card {
@@ -239,6 +329,39 @@ td.u-seen { color: var(--muted); font-size: 0.8rem; }
         </div>
       </div>
     </div>
+    <!-- News management -->
+    <div>
+      <div class="section-title">Post news</div>
+      <div class="news-form">
+        <div class="form-row">
+          <div class="field-wrap">
+            <label>Title</label>
+            <input type="text" id="news-title" placeholder="What's new?">
+          </div>
+          <div class="field-wrap" style="max-width:160px;">
+            <label>Tag</label>
+            <input type="text" id="news-tag" placeholder="Update" value="Update">
+          </div>
+        </div>
+        <div class="field-wrap">
+          <label>Body <span style="font-weight:400;color:#475569;">(optional)</span></label>
+          <textarea id="news-body" rows="3" placeholder="More details…"></textarea>
+        </div>
+        <button class="btn-post" id="btn-post">Post</button>
+        <p class="post-status" id="post-status"></p>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-title" style="display:flex;justify-content:space-between;align-items:center;">
+        <span>News posts</span>
+        <button class="btn-refresh" id="btn-refresh-news">Refresh</button>
+      </div>
+      <div class="table-wrap" id="news-table-wrap">
+        <div class="empty-state">Loading…</div>
+      </div>
+    </div>
+
     <div>
       <div class="section-title">Signed-in users</div>
       <div class="table-wrap">
@@ -336,6 +459,79 @@ td.u-seen { color: var(--muted); font-size: 0.8rem; }
 
   // Sign out
   document.getElementById('btn-signout').addEventListener('click', showLogin);
+
+  // ── News ──
+  function loadNews() {
+    var wrap = document.getElementById('news-table-wrap');
+    wrap.innerHTML = '<div class="empty-state">Loading…</div>';
+    fetch('https://api.itisnow.net/api/data/news?limit=100', {
+      headers: { 'X-App-Id': 'app_XnOUnf_n2Js1' }
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      var docs = Array.isArray(data) ? data : (data.docs || data.items || data.data || []);
+      docs = docs.map(function(d) { return Object.assign({}, d.data || d.doc || d, { _id: d.id || d._id || (d.data && d.data.id) }); });
+      docs.sort(function(a,b) { return new Date(b.createdAt||0) - new Date(a.createdAt||0); });
+      if (!docs.length) { wrap.innerHTML = '<div class="empty-state">No posts yet.</div>'; return; }
+      wrap.innerHTML = docs.map(function(n) {
+        var d = n.createdAt ? new Date(n.createdAt).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : '';
+        return '<div class="news-row">'
+          + '<div><div class="news-row-title">' + esc(n.title||'(no title)') + '</div>'
+          + '<div style="font-size:0.78rem;color:var(--muted);margin-top:0.15rem;">' + d + (n.body ? ' · ' + esc(n.body.slice(0,60)) + (n.body.length>60?'…':'') : '') + '</div></div>'
+          + '<span class="news-row-tag">' + esc(n.tag||'Update') + '</span>'
+          + '<button class="btn-delete" data-id="' + esc(n._id||n.id||'') + '">Delete</button>'
+          + '</div>';
+      }).join('');
+      wrap.querySelectorAll('.btn-delete').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var id = btn.getAttribute('data-id');
+          if (!id) return;
+          btn.disabled = true; btn.textContent = '…';
+          fetch('https://api.itisnow.net/api/data/news/' + encodeURIComponent(id), {
+            method: 'DELETE',
+            headers: { 'X-App-Id': 'app_XnOUnf_n2Js1' }
+          }).then(function() { loadNews(); }).catch(function() { btn.disabled = false; btn.textContent = 'Delete'; });
+        });
+      });
+    })
+    .catch(function() { wrap.innerHTML = '<div class="empty-state">Could not load posts.</div>'; });
+  }
+
+  document.getElementById('btn-refresh-news').addEventListener('click', loadNews);
+
+  document.getElementById('btn-post').addEventListener('click', function() {
+    var title = document.getElementById('news-title').value.trim();
+    var tag   = document.getElementById('news-tag').value.trim() || 'Update';
+    var body  = document.getElementById('news-body').value.trim();
+    var statusEl = document.getElementById('post-status');
+    var btn = document.getElementById('btn-post');
+
+    statusEl.textContent = '';
+    statusEl.className = 'post-status';
+    if (!title) { statusEl.textContent = 'Title is required.'; statusEl.className = 'post-status err'; return; }
+
+    btn.disabled = true; btn.textContent = 'Posting…';
+    var id = 'post_' + Date.now();
+    fetch('https://api.itisnow.net/api/data/news/' + id, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'X-App-Id': 'app_XnOUnf_n2Js1' },
+      body: JSON.stringify({ id: id, title: title, tag: tag, body: body, createdAt: new Date().toISOString() })
+    })
+    .then(function(r) {
+      if (!r.ok) throw new Error();
+      statusEl.textContent = 'Posted!';
+      statusEl.className = 'post-status ok';
+      document.getElementById('news-title').value = '';
+      document.getElementById('news-body').value = '';
+      document.getElementById('news-tag').value = 'Update';
+      loadNews();
+    })
+    .catch(function() {
+      statusEl.textContent = 'Failed to post. Try again.';
+      statusEl.className = 'post-status err';
+    })
+    .finally(function() { btn.disabled = false; btn.textContent = 'Post'; });
+  });
 
   // Load users from ItIsNow
   function loadUsers() {

@@ -374,6 +374,20 @@ a.app-card:hover { background: #0f1e35; }
 }
 .users-count span { color: var(--cyan); font-weight: 700; }
 
+/* ── NEWS ── */
+.news-list { display: flex; flex-direction: column; gap: 1px; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: var(--border); }
+.news-card { background: var(--bg2); padding: 1.5rem 1.75rem; display: flex; flex-direction: column; gap: 0.4rem; }
+.news-tag-row { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.2rem; }
+.news-tag {
+  font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 0.15rem 0.5rem; border-radius: 4px;
+  background: var(--cyan-dim); color: var(--cyan); border: 1px solid var(--cyan-border);
+}
+.news-date { font-size: 0.72rem; color: var(--muted); }
+.news-title { font-size: 1rem; font-weight: 700; color: #fff; }
+.news-body { font-size: 0.87rem; color: var(--muted); line-height: 1.7; }
+.news-empty { padding: 3rem; text-align: center; color: var(--muted); font-size: 0.88rem; }
+
 /* ── FOOTER ── */
 footer {
   border-top: 1px solid var(--border);
@@ -531,6 +545,7 @@ footer {
 <!-- Tabs -->
 <div class="tabs-bar">
   <button class="tab-btn active" data-tab="home">Home</button>
+  <button class="tab-btn" data-tab="news">News</button>
   <button class="tab-btn" data-tab="users">Users</button>
 </div>
 
@@ -607,6 +622,17 @@ footer {
 </div>
 
 </div><!-- end tab-home -->
+
+<!-- News tab -->
+<div id="tab-news" class="tab-panel">
+  <div class="section">
+    <div class="section-header">
+      <p class="section-label">Updates</p>
+      <h2 class="section-title">News</h2>
+    </div>
+    <div id="news-list"><div class="users-loading">Loading...</div></div>
+  </div>
+</div>
 
 <!-- Users tab -->
 <div id="tab-users" class="tab-panel">
@@ -719,6 +745,7 @@ footer {
   var tabBtns = document.querySelectorAll('.tab-btn');
   var tabPanels = document.querySelectorAll('.tab-panel');
   var usersLoaded = false;
+  var newsLoaded = false;
 
   tabBtns.forEach(function(btn) {
     btn.addEventListener('click', function() {
@@ -728,6 +755,7 @@ footer {
       btn.classList.add('active');
       document.getElementById('tab-' + target).classList.add('active');
       if (target === 'users' && !usersLoaded) loadUsers();
+      if (target === 'news' && !newsLoaded) loadNews();
     });
   });
 
@@ -746,6 +774,40 @@ footer {
   function initials(name) {
     if (!name) return '?';
     return name.trim().split(/\s+/).map(function(w){ return w[0]; }).join('').toUpperCase().slice(0,2);
+  }
+
+  /* ── News ── */
+  function loadNews() {
+    newsLoaded = true;
+    fetch('https://api.itisnow.net/api/data/news?limit=50', {
+      headers: { 'X-App-Id': 'app_XnOUnf_n2Js1' }
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      var el = document.getElementById('news-list');
+      var docs = (data && (data.docs || data.items || data.data)) || [];
+      docs = docs.map(function(d) { return d.data || d.doc || d; });
+      docs.sort(function(a,b) { return new Date(b.createdAt||0) - new Date(a.createdAt||0); });
+      if (!docs.length) {
+        el.innerHTML = '<div class="news-empty">No news yet. Check back soon.</div>';
+        return;
+      }
+      el.innerHTML = '<div class="news-list">' + docs.map(function(n) {
+        var d = n.createdAt ? new Date(n.createdAt).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : '';
+        return '<div class="news-card">'
+          + '<div class="news-tag-row"><span class="news-tag">' + esc(n.tag||'Update') + '</span><span class="news-date">' + d + '</span></div>'
+          + '<div class="news-title">' + esc(n.title||'') + '</div>'
+          + (n.body ? '<div class="news-body">' + esc(n.body) + '</div>' : '')
+          + '</div>';
+      }).join('') + '</div>';
+    })
+    .catch(function() {
+      document.getElementById('news-list').innerHTML = '<div class="news-empty">Could not load news.</div>';
+    });
+  }
+
+  function esc(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
 
   function loadUsers() {
