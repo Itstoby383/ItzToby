@@ -18,8 +18,8 @@ export default function handler(req, res) {
 
   const { email, password } = req.body || {};
 
-  const validEmail    = process.env.ADMIN_EMAIL;
-  const validPassword = process.env.ADMIN_PASSWORD;
+  const validEmail    = process.env.Tobz@itztoby.co.uk;
+  const validPassword = process.env.Itstoby383!;
 
   if (!validEmail || !validPassword) {
     return res.status(500).json({ error: 'Admin credentials not configured on server.' });
