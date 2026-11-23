@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #070d1a;
+  --bg2: #0c1526;
+  --bg3: #111d33;
+  --cyan: #00e0ff;
+  --cyan-dim: rgba(0,224,255,0.12);
+  --border: rgba(255,255,255,0.08);
+  --text: #f1f5f9;
+  --muted: #64748b;
+  --red: #ef4444;
+}
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ── LOGIN VIEW ── */
+#login-view {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+}
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.login-brand {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.login-brand span { color: var(--cyan); }
+.login-title { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.02em; }
+.login-subtitle { color: var(--muted); font-size: 0.9rem; margin-top: 0.3rem; }
+.field { display: flex; flex-direction: column; gap: 0.4rem; }
+.field label { font-size: 0.8rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.field input {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.95rem;
+  padding: 0.75rem 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.field input:focus { border-color: var(--cyan); }
+.btn-login {
+  background: var(--cyan);
+  color: #000;
+  border: none;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 0.85rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  margin-top: 0.25rem;
+}
+.btn-login:hover { opacity: 0.85; }
+.btn-login:disabled { opacity: 0.5; cursor: not-allowed; }
+.login-error {
+  color: #fca5a5;
+  font-size: 0.85rem;
+  min-height: 1.2em;
+  text-align: center;
+}
+
+/* ── ADMIN DASHBOARD ── */
+#admin-view { display: none; }
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(7,13,26,0.92);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  height: 60px;
+}
+.nav-brand { font-size: 1rem; font-weight: 700; color: #fff; }
+.nav-brand span { color: var(--cyan); }
+.nav-badge {
+  background: var(--cyan-dim);
+  color: var(--cyan);
+  border: 1px solid rgba(0,224,255,0.25);
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.btn-signout {
+  background: rgba(239,68,68,0.12);
+  color: var(--red);
+  border: 1px solid rgba(239,68,68,0.25);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.4rem 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-signout:hover { background: rgba(239,68,68,0.22); }
+
+main { max-width: 900px; margin: 0 auto; padding: 2.5rem 1.5rem; display: flex; flex-direction: column; gap: 2rem; }
+
+.section-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+/* stats row */
+.stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; }
+.stat-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+}
+.stat-label { font-size: 0.78rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+.stat-value { font-size: 2rem; font-weight: 900; color: var(--cyan); margin-top: 0.3rem; letter-spacing: -0.03em; }
+
+/* users table */
+.table-wrap {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+table { width: 100%; border-collapse: collapse; }
+thead th {
+  background: var(--bg3);
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.85rem 1.25rem;
+  text-align: left;
+}
+tbody tr { border-top: 1px solid var(--border); transition: background 0.15s; }
+tbody tr:hover { background: var(--bg3); }
+tbody td { padding: 0.9rem 1.25rem; font-size: 0.88rem; }
+td.u-name { font-weight: 600; }
+td.u-email { color: var(--muted); }
+td.u-seen { color: var(--muted); font-size: 0.8rem; }
+.shimmer {
+  display: inline-block;
+  width: 120px; height: 14px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, var(--bg3) 25%, var(--bg2) 50%, var(--bg3) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+.empty-state { padding: 2.5rem; text-align: center; color: var(--muted); font-size: 0.9rem; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN VIEW -->
+<div id="login-view">
+  <div class="login-card">
+    <div>
+      <div class="login-brand">itz<span>toby</span></div>
+      <div class="login-title">Admin access</div>
+      <div class="login-subtitle">This area is restricted.</div>
+    </div>
+    <div class="field">
+      <label>Email</label>
+      <input type="email" id="inp-email" autocomplete="username" placeholder="admin@example.com">
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="inp-pass" autocomplete="current-password" placeholder="••••••••">
+    </div>
+    <button class="btn-login" id="btn-login">Sign in</button>
+    <p class="login-error" id="login-err"></p>
+  </div>
+</div>
+
+<!-- ADMIN DASHBOARD -->
+<div id="admin-view">
+  <nav>
+    <div style="display:flex;align-items:center;gap:0.75rem;">
+      <span class="nav-brand">itz<span>toby</span></span>
+      <span class="nav-badge">Admin</span>
+    </div>
+    <button class="btn-signout" id="btn-signout">Sign out</button>
+  </nav>
+  <main>
+    <div>
+      <div class="section-title">Overview</div>
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-label">Total users</div>
+          <div class="stat-value" id="stat-users">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Active today</div>
+          <div class="stat-value" id="stat-today">—</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="section-title">Signed-in users</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Last seen</th>
+            </tr>
+          </thead>
+          <tbody id="users-tbody">
+            <tr><td colspan="3"><div class="empty-state">Loading…</div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+(function() {
+  var TOKEN_KEY = 'itztoby_admin_token';
+
+  function getToken() {
+    try { return sessionStorage.getItem(TOKEN_KEY); } catch(e) { return null; }
+  }
+  function setToken(t) {
+    try { sessionStorage.setItem(TOKEN_KEY, t); } catch(e) {}
+  }
+  function clearToken() {
+    try { sessionStorage.removeItem(TOKEN_KEY); } catch(e) {}
+  }
+
+  function showDashboard() {
+    document.getElementById('login-view').style.display = 'none';
+    document.getElementById('admin-view').style.display = 'block';
+    loadUsers();
+  }
+
+  function showLogin() {
+    document.getElementById('login-view').style.display = '';
+    document.getElementById('admin-view').style.display = 'none';
+    clearToken();
+  }
+
+  // Check existing session
+  if (getToken()) {
+    showDashboard();
+  }
+
+  // Login
+  document.getElementById('btn-login').addEventListener('click', doLogin);
+  document.getElementById('inp-pass').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') doLogin();
+  });
+  document.getElementById('inp-email').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') document.getElementById('inp-pass').focus();
+  });
+
+  function doLogin() {
+    var email = document.getElementById('inp-email').value.trim();
+    var pass  = document.getElementById('inp-pass').value;
+    var errEl = document.getElementById('login-err');
+    var btn   = document.getElementById('btn-login');
+
+    errEl.textContent = '';
+    if (!email || !pass) { errEl.textContent = 'Please fill in both fields.'; return; }
+
+    btn.disabled = true;
+    btn.textContent = 'Signing in…';
+
+    fetch('/api/admin-auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, password: pass })
+    })
+    .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+    .then(function(res) {
+      if (res.ok && res.data.token) {
+        setToken(res.data.token);
+        showDashboard();
+      } else {
+        errEl.textContent = res.data.error || 'Login failed.';
+      }
+    })
+    .catch(function() {
+      errEl.textContent = 'Could not reach server. Try again.';
+    })
+    .finally(function() {
+      btn.disabled = false;
+      btn.textContent = 'Sign in';
+    });
+  }
+
+  // Sign out
+  document.getElementById('btn-signout').addEventListener('click', showLogin);
+
+  // Load users from ItIsNow
+  function loadUsers() {
+    fetch('https://api.itisnow.net/api/data/users?limit=100', {
+      headers: { 'X-App-Id': 'app_XnOUnf_n2Js1' }
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(json) {
+      var docs = Array.isArray(json) ? json : (json.docs || json.items || json.data || []);
+      docs = docs.map(function(d) { return d.data || d.doc || d; });
+      renderUsers(docs);
+    })
+    .catch(function() {
+      document.getElementById('users-tbody').innerHTML =
+        '<tr><td colspan="3"><div class="empty-state">Could not load users.</div></td></tr>';
+    });
+  }
+
+  function renderUsers(users) {
+    var tbody = document.getElementById('users-tbody');
+    document.getElementById('stat-users').textContent = users.length;
+
+    var today = new Date();
+    today.setHours(0,0,0,0);
+    var activeToday = users.filter(function(u) {
+      if (!u.lastSeen) return false;
+      return new Date(u.lastSeen) >= today;
+    }).length;
+    document.getElementById('stat-today').textContent = activeToday;
+
+    if (!users.length) {
+      tbody.innerHTML = '<tr><td colspan="3"><div class="empty-state">No users yet.</div></td></tr>';
+      return;
+    }
+
+    users.sort(function(a,b) {
+      return new Date(b.lastSeen || 0) - new Date(a.lastSeen || 0);
+    });
+
+    tbody.innerHTML = users.map(function(u) {
+      var seen = u.lastSeen ? timeAgo(new Date(u.lastSeen)) : '—';
+      return '<tr>'
+        + '<td class="u-name">' + esc(u.username || '—') + '</td>'
+        + '<td class="u-email">' + esc(u.email || '—') + '</td>'
+        + '<td class="u-seen">' + esc(seen) + '</td>'
+        + '</tr>';
+    }).join('');
+  }
+
+  function esc(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function timeAgo(date) {
+    var diff = Math.floor((Date.now() - date) / 1000);
+    if (diff < 60) return 'just now';
+    if (diff < 3600) return Math.floor(diff/60) + 'm ago';
+    if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
+    return Math.floor(diff/86400) + 'd ago';
+  }
+})();
+</script>
+</body>
+</html>
