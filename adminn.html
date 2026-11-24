@@ -460,13 +460,15 @@ td.u-seen { color: var(--muted); font-size: 0.8rem; }
   // Sign out
   document.getElementById('btn-signout').addEventListener('click', showLogin);
 
-  // ── News ──
+  // ── News (via serverless proxy so writes are authorised) ──
+  function adminHeaders() {
+    return { 'Content-Type': 'application/json', 'X-Admin-Token': getToken() };
+  }
+
   function loadNews() {
     var wrap = document.getElementById('news-table-wrap');
     wrap.innerHTML = '<div class="empty-state">Loading…</div>';
-    fetch('https://api.itisnow.net/api/data/news?limit=100', {
-      headers: { 'X-App-Id': 'app_XnOUnf_n2Js1' }
-    })
+    fetch('/api/news', { headers: { 'X-Admin-Token': getToken() } })
     .then(function(r) { return r.json(); })
     .then(function(data) {
       var docs = Array.isArray(data) ? data : (data.docs || data.items || data.data || []);
@@ -487,9 +489,9 @@ td.u-seen { color: var(--muted); font-size: 0.8rem; }
           var id = btn.getAttribute('data-id');
           if (!id) return;
           btn.disabled = true; btn.textContent = '…';
-          fetch('https://api.itisnow.net/api/data/news/' + encodeURIComponent(id), {
+          fetch('/api/news?id=' + encodeURIComponent(id), {
             method: 'DELETE',
-            headers: { 'X-App-Id': 'app_XnOUnf_n2Js1' }
+            headers: { 'X-Admin-Token': getToken() }
           }).then(function() { loadNews(); }).catch(function() { btn.disabled = false; btn.textContent = 'Delete'; });
         });
       });
@@ -511,11 +513,10 @@ td.u-seen { color: var(--muted); font-size: 0.8rem; }
     if (!title) { statusEl.textContent = 'Title is required.'; statusEl.className = 'post-status err'; return; }
 
     btn.disabled = true; btn.textContent = 'Posting…';
-    var id = 'post_' + Date.now();
-    fetch('https://api.itisnow.net/api/data/news/' + id, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json', 'X-App-Id': 'app_XnOUnf_n2Js1' },
-      body: JSON.stringify({ id: id, title: title, tag: tag, body: body, createdAt: new Date().toISOString() })
+    fetch('/api/news', {
+      method: 'POST',
+      headers: adminHeaders(),
+      body: JSON.stringify({ title: title, tag: tag, body: body })
     })
     .then(function(r) {
       if (!r.ok) throw new Error();
