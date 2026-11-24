@@ -49,6 +49,23 @@ body {
 .login-heading p { color: #94a3b8; font-size: 0.95rem; }
 .divider { width: 100%; height: 1px; background: rgba(255,255,255,0.07); }
 .error { color: #fca5a5; font-size: 0.85rem; min-height: 1.2em; }
+#itisnow-wrap {
+  width: 100%;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+#itisnow-wrap.visible {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateY(0);
+}
+.captcha-hint {
+  font-size: 0.8rem;
+  color: #64748b;
+  text-align: center;
+}
 </style>
 </head>
 <body>
@@ -77,14 +94,19 @@ body {
   </div>
   <div class="divider"></div>
 
-  <script src="https://api.itisnow.net/button.js"
-          data-app-id="app_XnOUnf_n2Js1"
-          data-button="true"></script>
-
   <div class="cf-turnstile" id="turnstile-widget"
        data-sitekey="0x4AAAAAAGPjfmnPHGBPTbSH"
        data-theme="dark"
-       data-size="flexible"></div>
+       data-size="flexible"
+       data-callback="onCaptchaDone"></div>
+
+  <p class="captcha-hint" id="captcha-hint">Complete the check to continue</p>
+
+  <div id="itisnow-wrap">
+    <script src="https://api.itisnow.net/button.js"
+            data-app-id="app_XnOUnf_n2Js1"
+            data-button="true"></script>
+  </div>
 
   <p class="error" id="error-msg"></p>
 </div>
@@ -92,17 +114,16 @@ body {
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
 <script>
+  function onCaptchaDone() {
+    var wrap = document.getElementById('itisnow-wrap');
+    var hint = document.getElementById('captcha-hint');
+    wrap.classList.add('visible');
+    if (hint) hint.style.display = 'none';
+  }
+
   window.addEventListener('itisnow:login', function(e) {
     var user  = e.detail.user;
     var token = e.detail.token;
-
-    // Block if CAPTCHA not completed
-    var captchaOk = false;
-    try { captchaOk = !!(window.turnstile && window.turnstile.getResponse()); } catch(err) {}
-    if (!captchaOk) {
-      document.getElementById('error-msg').textContent = 'Please complete the CAPTCHA first.';
-      return;
-    }
 
     try {
       localStorage.setItem('orca_user', JSON.stringify({
