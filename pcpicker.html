@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#070d1a">
+<title>PC Builder – itztoby</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #070d1a; --bg2: #0c1526; --border: rgba(255,255,255,0.07);
+  --text: #e8edf5; --muted: #64748b; --cyan: #00e0ff;
+  --cyan-dim: rgba(0,224,255,0.1); --cyan-border: rgba(0,224,255,0.2);
+  --red: #f87171; --amber: #fbbf24; --green: #4ade80;
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+
+nav { position: sticky; top: 0; z-index: 50; background: rgba(7,13,26,0.9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+.nav-inner { max-width: 1060px; margin: 0 auto; padding: 0.9rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+.brand { color: #fff; font-size: 1.15rem; font-weight: 800; letter-spacing: -0.03em; text-decoration: none; }
+.brand span { color: var(--cyan); }
+.nav-btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: #94a3b8; font-family: inherit; font-size: 0.82rem; font-weight: 500; cursor: pointer; text-decoration: none; transition: color .15s, border-color .15s, background .15s; }
+.nav-btn:hover { color: #fff; border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.04); }
+
+.wrap { max-width: 1060px; margin: 0 auto; padding: 3.5rem 1.5rem 4rem; width: 100%; flex: 1; }
+.label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cyan); margin-bottom: 0.5rem; }
+h1 { font-size: clamp(2.2rem, 5vw, 3.4rem); font-weight: 900; letter-spacing: -0.05em; line-height: 1.05; color: #fff; margin-bottom: 1rem; }
+h1 span { color: var(--cyan); }
+.sub { color: var(--muted); font-size: 0.95rem; line-height: 1.7; max-width: 520px; margin-bottom: 2.5rem; }
+
+.layout { display: grid; grid-template-columns: 1fr 300px; gap: 1.5rem; align-items: start; }
+
+.parts { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: var(--border); display: flex; flex-direction: column; gap: 1px; }
+.part-row { background: var(--bg2); padding: 1.1rem 1.4rem; display: grid; grid-template-columns: 110px 1fr auto; gap: 1rem; align-items: center; }
+.part-cat { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.part-name { font-size: 0.92rem; font-weight: 600; color: #fff; }
+.part-spec { font-size: 0.78rem; color: var(--muted); margin-top: 0.15rem; }
+.part-empty { font-size: 0.85rem; color: var(--muted); }
+.part-actions { display: flex; align-items: center; gap: 0.75rem; }
+.part-price { font-size: 0.88rem; font-weight: 700; color: var(--cyan); white-space: nowrap; }
+.btn-cyan { padding: 0.5rem 1rem; border-radius: 6px; background: var(--cyan); color: #000; font-family: inherit; font-size: 0.8rem; font-weight: 700; border: none; cursor: pointer; transition: opacity .15s; }
+.btn-cyan:hover { opacity: 0.85; }
+.btn-ghost { padding: 0.5rem 0.8rem; border-radius: 6px; background: transparent; color: #94a3b8; font-family: inherit; font-size: 0.8rem; font-weight: 500; border: 1px solid var(--border); cursor: pointer; transition: color .15s, border-color .15s; }
+.btn-ghost:hover { color: #fff; border-color: rgba(255,255,255,0.2); }
+.btn-ghost.danger:hover { color: var(--red); border-color: rgba(248,113,113,0.35); }
+
+.summary { position: sticky; top: 76px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg2); padding: 1.4rem; }
+.summary h2 { font-size: 0.9rem; font-weight: 800; color: #fff; margin-bottom: 1rem; }
+.sum-row { display: flex; justify-content: space-between; font-size: 0.82rem; padding: 0.45rem 0; border-bottom: 1px solid var(--border); color: var(--muted); }
+.sum-row b { color: var(--text); font-weight: 600; }
+.sum-total { display: flex; justify-content: space-between; align-items: baseline; margin: 1rem 0; }
+.sum-total span { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.sum-total b { font-size: 1.7rem; font-weight: 900; color: var(--cyan); letter-spacing: -0.03em; }
+.checks { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; }
+.check { font-size: 0.78rem; line-height: 1.5; padding: 0.55rem 0.7rem; border-radius: 6px; border: 1px solid; }
+.check.ok { color: var(--green); border-color: rgba(74,222,128,0.25); background: rgba(74,222,128,0.06); }
+.check.warn { color: var(--amber); border-color: rgba(251,191,36,0.25); background: rgba(251,191,36,0.06); }
+.check.bad { color: var(--red); border-color: rgba(248,113,113,0.25); background: rgba(248,113,113,0.06); }
+.summary .btn-ghost { width: 100%; }
+.note { font-size: 0.72rem; color: var(--muted); margin-top: 1rem; line-height: 1.6; }
+
+.modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 200; padding: 1.5rem; opacity: 0; pointer-events: none; transition: opacity .15s; }
+.modal-backdrop.open { opacity: 1; pointer-events: all; }
+.modal { width: 100%; max-width: 640px; max-height: 85vh; display: flex; flex-direction: column; background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+.modal-header { display: flex; align-items: center; justify-content: space-between; padding: 1.1rem 1.4rem; border-bottom: 1px solid var(--border); }
+.modal-header h2 { font-size: 0.9rem; font-weight: 700; color: #fff; }
+.close-btn { width: 26px; height: 26px; background: transparent; border: 1px solid var(--border); border-radius: 4px; color: var(--muted); cursor: pointer; font-size: 0.85rem; }
+.close-btn:hover { color: #fff; border-color: rgba(255,255,255,0.2); }
+.modal-tools { display: flex; gap: 0.6rem; padding: 0.9rem 1.4rem; border-bottom: 1px solid var(--border); }
+.modal-tools input, .modal-tools select { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: inherit; font-size: 0.82rem; padding: 0.5rem 0.7rem; outline: none; }
+.modal-tools input { flex: 1; }
+.modal-tools input:focus, .modal-tools select:focus { border-color: var(--cyan-border); }
+.modal-list { overflow-y: auto; }
+.opt { display: grid; grid-template-columns: 1fr auto auto; gap: 1rem; align-items: center; padding: 0.9rem 1.4rem; border-bottom: 1px solid var(--border); }
+.opt:last-child { border-bottom: none; }
+.opt.dim .part-name, .opt.dim .part-spec, .opt.dim .part-price { opacity: 0.4; }
+.why { font-size: 0.72rem; color: var(--red); margin-top: 0.2rem; }
+.empty { padding: 2.5rem; text-align: center; color: var(--muted); font-size: 0.85rem; }
+
+
+.model-card { border: 1px solid var(--border); border-radius: 10px; background: var(--bg2); margin-bottom: 1.5rem; overflow: hidden; }
+.model-head { display: flex; align-items: center; justify-content: space-between; padding: 0.9rem 1.4rem; border-bottom: 1px solid var(--border); gap: 1rem; flex-wrap: wrap; }
+.model-head h2 { font-size: 0.9rem; font-weight: 800; color: #fff; }
+.seg { display: inline-flex; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.seg button { background: transparent; border: none; color: var(--muted); font-family: inherit; font-size: 0.78rem; font-weight: 600; padding: 0.4rem 0.9rem; cursor: pointer; }
+.seg button.on { background: var(--cyan-dim); color: var(--cyan); }
+.model-stage { display: flex; align-items: center; justify-content: center; min-height: 340px; padding: 1rem; background: radial-gradient(ellipse at center, rgba(0,224,255,0.05), transparent 70%); }
+#m3d { display: block; width: 100%; height: 420px; cursor: grab; touch-action: none; user-select: none; }
+#m3d canvas { display: block; width: 100%; height: 100%; }
+#m3d:active { cursor: grabbing; }
+.cube { position: relative; width: 320px; height: 280px; transform-style: preserve-3d; }
+.face { position: absolute; backface-visibility: visible; border: 1px solid rgba(0,224,255,0.35); background: rgba(10,20,38,0.88); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.face svg { width: 100%; height: 100%; }
+.model-hint { font-size: 0.72rem; color: var(--muted); padding: 0 1.4rem 1rem; }
+a.pics { color: var(--cyan); text-decoration: none; font-weight: 600; }
+a.pics:hover { text-decoration: underline; }
+
+footer { border-top: 1px solid var(--border); }
+.footer-inner { max-width: 1060px; margin: 0 auto; padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.footer-brand { font-size: 0.95rem; font-weight: 800; color: #fff; letter-spacing: -0.02em; }
+.footer-brand span { color: var(--cyan); }
+.footer-copy { color: var(--muted); font-size: 0.78rem; }
+
+@media (max-width: 820px) {
+  .layout { grid-template-columns: 1fr; }
+  .summary { position: static; }
+  .part-row { grid-template-columns: 1fr; gap: 0.6rem; }
+  .opt { grid-template-columns: 1fr auto; }
+  .opt .part-price { grid-column: 1; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="main.html" class="brand">itz<span>toby</span></a>
+    <a href="main.html" class="nav-btn">&larr; Back</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <p class="label">Tools</p>
+  <h1>PC <span>Builder.</span></h1>
+  <p class="sub">Pick your parts, check they work together and see the total cost. Compatibility is checked as you go.</p>
+
+  <div class="model-card">
+    <div class="model-head">
+      <h2>Live model</h2>
+    </div>
+    <div class="model-stage">
+      <div id="m3d"></div>
+    </div>
+    <p class="model-hint">Drag to rotate, scroll to zoom. Parts are modelled to rough real-world size.</p>
+  </div>
+
+  <div class="layout">
+    <div class="parts" id="parts"></div>
+
+    <aside class="summary">
+      <h2>Your build</h2>
+      <div id="sum-rows"></div>
+      <div class="sum-total"><span>Total</span><b id="total">£0</b></div>
+      <div class="checks" id="checks"></div>
+      <button class="btn-ghost danger" id="reset">Clear build</button>
+      <p class="note">Prices are rough GBP estimates (some from UK retailers, some converted or guessed) and will differ from real retailers. Always double-check specs before buying.</p>
+    </aside>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <span class="footer-brand">itz<span>toby</span></span>
+    <span class="footer-copy">© 2026 itztoby</span>
+  </div>
+</footer>
+
+<div class="modal-backdrop" id="backdrop" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-header"><h2 id="m-title">Choose</h2><button class="close-btn" id="m-close" aria-label="Close">✕</button></div>
+    <div class="modal-tools">
+      <input id="m-search" type="search" placeholder="Search...">
+      <select id="m-sort"><option value="lo">Price: low to high</option><option value="hi">Price: high to low</option></select>
+    </div>
+    <div class="modal-list" id="m-list"></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/* ── DATA (edit freely) ── */
+var CATS = [
+  { id: 'cpu', name: 'CPU' },
+  { id: 'cooler', name: 'Cooler' },
+  { id: 'mobo', name: 'Motherboard' },
+  { id: 'ram', name: 'Memory' },
+  { id: 'gpu', name: 'Graphics' },
+  { id: 'storage', name: 'Storage' },
+  { id: 'psu', name: 'Power Supply' },
+  { id: 'case', name: 'Case' }
+];
+
+var DATA = {
+  cpu: [
+    /* AMD AM5 desktop */
+    { n: 'AMD Ryzen 5 7600', p: 175, s: 'AM5', w: 65, sp: '6C/12T · AM5' },
+    { n: 'AMD Ryzen 7 7800X3D', p: 355, s: 'AM5', w: 120, sp: '8C/16T · AM5' },
+    { n: 'AMD Ryzen 5 9600X', p: 190, s: 'AM5', w: 65, sp: '6C/12T · 5.4GHz · AM5' },
+    { n: 'AMD Ryzen 7 9700X', p: 250, s: 'AM5', w: 65, sp: '8C/16T · 5.5GHz · AM5' },
+    { n: 'AMD Ryzen 7 9800X3D', p: 350, s: 'AM5', w: 120, sp: '8C/16T · 5.2GHz · 96MB · AM5' },
+    { n: 'AMD Ryzen 9 9900X', p: 323, s: 'AM5', w: 120, sp: '12C/24T · 5.6GHz · AM5' },
+    { n: 'AMD Ryzen 9 9950X', p: 479, s: 'AM5', w: 170, sp: '16C/32T · 5.7GHz · AM5' },
+    /* AMD AM4 */
+    { n: 'AMD Ryzen 5 5600', p: 105, s: 'AM4', w: 65, sp: '6C/12T · AM4' },
+    { n: 'AMD Ryzen 7 5700X', p: 150, s: 'AM4', w: 65, sp: '8C/16T · AM4' },
+    /* Intel Core Ultra 200S (LGA1851) */
+    { n: 'Intel Core Ultra 5 245K', p: 230, s: 'LGA1851', w: 125, sp: '14C (6P+8E) · 5.2GHz · LGA1851' },
+    { n: 'Intel Core Ultra 5 245KF', p: 215, s: 'LGA1851', w: 125, sp: '14C (6P+8E) · no iGPU · LGA1851' },
+    { n: 'Intel Core Ultra 5 245', p: 215, s: 'LGA1851', w: 65, sp: '14C (6P+8E) · 65W · LGA1851' },
+    { n: 'Intel Core Ultra 7 265K', p: 300, s: 'LGA1851', w: 125, sp: '20C (8P+12E) · 5.5GHz · LGA1851' },
+    { n: 'Intel Core Ultra 7 265KF', p: 285, s: 'LGA1851', w: 125, sp: '20C (8P+12E) · no iGPU · LGA1851' },
+    { n: 'Intel Core Ultra 7 265', p: 290, s: 'LGA1851', w: 65, sp: '20C (8P+12E) · 65W · LGA1851' },
+    { n: 'Intel Core Ultra 9 285K', p: 430, s: 'LGA1851', w: 125, sp: '24C (8P+16E) · 5.7GHz · LGA1851' },
+    { n: 'Intel Core Ultra 9 285', p: 410, s: 'LGA1851', w: 65, sp: '24C (8P+16E) · 65W · LGA1851' },
+    /* Intel 14th gen (LGA1700) */
+    { n: 'Intel Core i5-13400F', p: 150, s: 'LGA1700', w: 65, sp: '10C/16T · LGA1700' },
+    { n: 'Intel Core i5-13600K', p: 220, s: 'LGA1700', w: 125, sp: '14C/20T · LGA1700' },
+    { n: 'Intel Core i5-13600KF', p: 205, s: 'LGA1700', w: 125, sp: '14C/20T · no iGPU · LGA1700' },
+    { n: 'Intel Core i7-13700K', p: 290, s: 'LGA1700', w: 125, sp: '16C/24T · LGA1700' },
+    { n: 'Intel Core i7-13700KF', p: 270, s: 'LGA1700', w: 125, sp: '16C/24T · no iGPU · LGA1700' },
+    { n: 'Intel Core i9-13900K', p: 400, s: 'LGA1700', w: 125, sp: '24C/32T · LGA1700' },
+    { n: 'Intel Core i9-13900KF', p: 380, s: 'LGA1700', w: 125, sp: '24C/32T · no iGPU · LGA1700' },
+    { n: 'Intel Core i9-13900KS', p: 480, s: 'LGA1700', w: 150, sp: '24C/32T · 6.0GHz · LGA1700' },
+    { n: 'Intel Core i5-14600K', p: 235, s: 'LGA1700', w: 125, sp: '14C/20T · LGA1700' },
+    { n: 'Intel Core i5-14600KF', p: 220, s: 'LGA1700', w: 125, sp: '14C/20T · no iGPU · LGA1700' },
+    { n: 'Intel Core i7-14700K', p: 330, s: 'LGA1700', w: 125, sp: '20C/28T · LGA1700' },
+    { n: 'Intel Core i7-14700KF', p: 310, s: 'LGA1700', w: 125, sp: '20C/28T · no iGPU · LGA1700' },
+    { n: 'Intel Core i9-14900K', p: 440, s: 'LGA1700', w: 125, sp: '24C/32T · 6.0GHz · LGA1700' },
+    { n: 'Intel Core i9-14900KF', p: 420, s: 'LGA1700', w: 125, sp: '24C/32T · no iGPU · LGA1700' },
+    { n: 'Intel Core i9-14900KS', p: 520, s: 'LGA1700', w: 150, sp: '24C/32T · 6.2GHz · LGA1700' },
+    /* Intel Xeon W-3400 (LGA4677) */
+    { n: 'Intel Xeon w5-3435X', p: 1270, s: 'LGA4677', w: 270, sp: '16C/32T · 8ch DDR5 · LGA4677' },
+    { n: 'Intel Xeon w7-3455', p: 2000, s: 'LGA4677', w: 270, sp: '24C/48T · 8ch DDR5 · LGA4677' },
+    { n: 'Intel Xeon w7-3465X', p: 2300, s: 'LGA4677', w: 300, sp: '28C/56T · 8ch DDR5 · LGA4677' },
+    { n: 'Intel Xeon w9-3475X', p: 3000, s: 'LGA4677', w: 300, sp: '36C/72T · 8ch DDR5 · LGA4677' },
+    { n: 'Intel Xeon w9-3495X', p: 4700, s: 'LGA4677', w: 350, sp: '56C/112T · 8ch DDR5 · LGA4677' },
+    /* AMD EPYC (SP5) */
+    { n: 'AMD EPYC 9174F', p: 3100, s: 'SP5', w: 320, sp: '16C/32T · 4.4GHz · SP5' },
+    { n: 'AMD EPYC 9175F', p: 3200, s: 'SP5', w: 320, sp: '16C/32T · Zen 5 · SP5' },
+    { n: 'AMD EPYC 9274F', p: 2450, s: 'SP5', w: 320, sp: '24C/48T · 4.3GHz · SP5' },
+    { n: 'AMD EPYC 9374F', p: 3900, s: 'SP5', w: 320, sp: '32C/64T · 4.3GHz · SP5' },
+    { n: 'AMD EPYC 9474F', p: 5400, s: 'SP5', w: 360, sp: '48C/96T · 4.1GHz · SP5' },
+    { n: 'AMD EPYC 9654', p: 9400, s: 'SP5', w: 360, sp: '96C/192T · 384MB L3 · SP5' },
+    { n: 'AMD EPYC 9754', p: 9500, s: 'SP5', w: 360, sp: '128C/256T · Bergamo · SP5' }
+  ],
+  cooler: [
+    { n: 'Intel stock cooler (LGA1700/1851 only)', p: 0, s: ['LGA1700','LGA1851'], sp: 'Basic air' },
+    { n: 'Thermalright Assassin X 120', p: 18, s: ['AM4','AM5','LGA1700','LGA1851'], sp: 'Air · 120mm' },
+    { n: 'Thermalright Peerless Assassin 120', p: 35, s: ['AM4','AM5','LGA1700','LGA1851'], sp: 'Dual tower air' },
+    { n: 'Noctua NH-D15 G2', p: 130, s: ['AM4','AM5','LGA1700','LGA1851'], sp: 'Dual tower air' },
+    { n: 'MSI MAG CoreLiquid A13 240', p: 45, s: ['AM4','AM5','LGA1700','LGA1851'], sp: '240mm AIO' },
+    { n: 'Arctic Liquid Freezer III 360', p: 100, s: ['AM4','AM5','LGA1700','LGA1851'], sp: '360mm AIO' },
+    { n: 'Corsair iCUE Link Titan 360', p: 190, s: ['AM5','LGA1700','LGA1851'], sp: '360mm AIO' },
+    { n: 'Noctua NH-U14S DX-4677', p: 115, s: ['LGA4677'], sp: 'Air · Xeon W' },
+    { n: 'Arctic Freezer 4U-SP5', p: 80, s: ['SP5'], sp: 'Server air · SP5' },
+    { n: 'Noctua NH-U14S TR5-SP6', p: 120, s: ['SP5'], sp: 'Air · SP5' }
+  ],
+  mobo: [
+    /* AM5 */
+    { n: 'MSI B650M Gaming Plus', p: 135, s: 'AM5', m: 'DDR5', f: 'mATX', sp: 'B650 · AM5 · DDR5 · mATX' },
+    { n: 'ASUS TUF B650-Plus', p: 195, s: 'AM5', m: 'DDR5', f: 'ATX', sp: 'B650 · AM5 · DDR5 · ATX' },
+    { n: 'MSI MAG B850 Tomahawk Max WiFi II', p: 210, s: 'AM5', m: 'DDR5', f: 'ATX', sp: 'B850 · 5GbE · Wi-Fi 7 · ATX' },
+    { n: 'MSI MPG B850 Edge TI WiFi', p: 200, s: 'AM5', m: 'DDR5', f: 'ATX', sp: 'B850 · 4x M.2 · ATX' },
+    { n: 'MSI B850 Gaming Plus WiFi PZ', p: 190, s: 'AM5', m: 'DDR5', f: 'ATX', sp: 'B850 · Wi-Fi · ATX' },
+    { n: 'ASUS TUF Gaming B850-Plus WiFi', p: 210, s: 'AM5', m: 'DDR5', f: 'ATX', sp: 'B850 · Wi-Fi · ATX' },
+    { n: 'ASRock X870E Challenger WiFi', p: 230, s: 'AM5', m: 'DDR5', f: 'ATX', sp: 'X870E · USB4 · 5GbE · ATX' },
+    { n: 'MSI MPG X870E Carbon WiFi', p: 380, s: 'AM5', m: 'DDR5', f: 'ATX', sp: 'X870E · USB4 · ATX' },
+    { n: 'ASUS ROG Crosshair X870E Hero', p: 650, s: 'AM5', m: 'DDR5', f: 'ATX', sp: 'X870E · 5x M.2 · ATX' },
+    { n: 'MSI MEG X870E Godlike', p: 1200, s: 'AM5', m: 'DDR5', f: 'EATX', sp: 'X870E · 7x M.2 · E-ATX' },
+    /* AM4 */
+    { n: 'Gigabyte B550M DS3H', p: 80, s: 'AM4', m: 'DDR4', f: 'mATX', sp: 'B550 · AM4 · DDR4 · mATX' },
+    { n: 'MSI B550 Tomahawk', p: 140, s: 'AM4', m: 'DDR4', f: 'ATX', sp: 'B550 · AM4 · DDR4 · ATX' },
+    /* LGA1851 */
+    { n: 'Gigabyte B860 Aorus Elite WiFi7', p: 170, s: 'LGA1851', m: 'DDR5', f: 'ATX', sp: 'B860 · Wi-Fi 7 · ATX' },
+    { n: 'MSI MAG B860 Tomahawk WiFi', p: 190, s: 'LGA1851', m: 'DDR5', f: 'ATX', sp: 'B860 · Wi-Fi · ATX' },
+    { n: 'ASUS Prime Z890-P', p: 180, s: 'LGA1851', m: 'DDR5', f: 'ATX', sp: 'Z890 · TB4 · ATX' },
+    { n: 'MSI PRO Z890-A WiFi', p: 190, s: 'LGA1851', m: 'DDR5', f: 'ATX', sp: 'Z890 · Wi-Fi · ATX' },
+    { n: 'MSI MAG Z890 Tomahawk WiFi II', p: 200, s: 'LGA1851', m: 'DDR5', f: 'ATX', sp: 'Z890 · Wi-Fi · ATX' },
+    { n: 'ASRock Z890 Taichi Lite', p: 330, s: 'LGA1851', m: 'DDR5', f: 'ATX', sp: 'Z890 · 6x M.2 · ATX' },
+    { n: 'ASUS ROG Maximus Z890 Apex', p: 700, s: 'LGA1851', m: 'DDR5', f: 'ATX', sp: 'Z890 · overclocking · ATX' },
+    /* LGA1700 */
+    { n: 'MSI PRO B760M-A', p: 110, s: 'LGA1700', m: 'DDR4', f: 'mATX', sp: 'B760 · DDR4 · mATX' },
+    { n: 'ASUS Prime Z790-P', p: 200, s: 'LGA1700', m: 'DDR5', f: 'ATX', sp: 'Z790 · DDR5 · ATX' },
+    /* Workstation / server */
+    { n: 'ASUS Pro WS W790-ACE', p: 900, s: 'LGA4677', m: 'DDR5 RDIMM', f: 'EATX', sp: 'W790 · Xeon W-3400 · E-ATX' },
+    { n: 'Supermicro H13SSL-N', p: 700, s: 'SP5', m: 'DDR5 RDIMM', f: 'ATX', sp: 'EPYC 9004/9005 · 12ch · ATX' }
+  ],
+  ram: [
+    { n: 'Corsair Vengeance 16GB (2x8)', p: 40, m: 'DDR4', sp: 'DDR4 3200MHz' },
+    { n: 'Crucial 32GB (2x16)', p: 65, m: 'DDR4', sp: 'DDR4 3200MHz' },
+    { n: 'Corsair Vengeance 32GB (2x16)', p: 95, m: 'DDR5', sp: 'DDR5 6000MHz' },
+    { n: 'G.Skill Trident Z5 64GB (2x32)', p: 190, m: 'DDR5', sp: 'DDR5 6000MHz' },
+    { n: 'Kingston Fury Beast 32GB (2x16)', p: 100, m: 'DDR5', sp: 'DDR5 6000MHz' },
+    { n: 'G.Skill Trident Z5 RGB 96GB (2x48)', p: 280, m: 'DDR5', sp: 'DDR5 6400MHz' },
+    { n: 'Samsung 64GB RDIMM (4x16)', p: 450, m: 'DDR5 RDIMM', sp: 'DDR5-4800 ECC · server' },
+    { n: 'Samsung 128GB RDIMM (4x32)', p: 850, m: 'DDR5 RDIMM', sp: 'DDR5-4800 ECC · server' },
+    { n: 'Samsung 256GB RDIMM (8x32)', p: 1700, m: 'DDR5 RDIMM', sp: 'DDR5-4800 ECC · server' }
+  ],
+  gpu: [
+    { n: 'Intel Arc B570', p: 220, w: 150, l: 270, sp: '10GB · 270mm' },
+    { n: 'Intel Arc B580', p: 250, w: 190, l: 280, sp: '12GB · 280mm' },
+    { n: 'AMD Radeon RX 7600', p: 240, w: 165, l: 240, sp: '8GB · 240mm' },
+    { n: 'NVIDIA RTX 4060', p: 280, w: 115, l: 240, sp: '8GB · 240mm' },
+    { n: 'NVIDIA RTX 5060', p: 270, w: 145, l: 245, sp: '8GB · 245mm' },
+    { n: 'AMD Radeon RX 9060 XT 16GB', p: 330, w: 160, l: 270, sp: '16GB · 270mm' },
+    { n: 'NVIDIA RTX 5060 Ti 16GB', p: 400, w: 180, l: 290, sp: '16GB · 290mm' },
+    { n: 'AMD Radeon RX 7800 XT', p: 430, w: 263, l: 300, sp: '16GB · 300mm' },
+    { n: 'AMD Radeon RX 9070', p: 500, w: 220, l: 300, sp: '16GB · 300mm' },
+    { n: 'NVIDIA RTX 5070', p: 500, w: 250, l: 300, sp: '12GB · 300mm' },
+    { n: 'NVIDIA RTX 4070 Super', p: 520, w: 220, l: 285, sp: '12GB · 285mm' },
+    { n: 'AMD Radeon RX 9070 XT', p: 580, w: 304, l: 320, sp: '16GB · 320mm' },
+    { n: 'NVIDIA RTX 5070 Ti', p: 720, w: 300, l: 310, sp: '16GB · 310mm' },
+    { n: 'NVIDIA RTX 4080 Super', p: 900, w: 320, l: 340, sp: '16GB · 340mm' },
+    { n: 'NVIDIA RTX 5080', p: 1000, w: 360, l: 330, sp: '16GB · 330mm' },
+    { n: 'NVIDIA RTX 5090', p: 2100, w: 575, l: 360, sp: '32GB · 360mm' }
+  ],
+  storage: [
+    { n: 'Crucial P3 500GB NVMe', p: 30, sp: '500GB · NVMe' },
+    { n: 'WD Blue SN580 1TB NVMe', p: 55, sp: '1TB · NVMe' },
+    { n: 'Kingston NV3 2TB NVMe', p: 100, sp: '2TB · NVMe Gen4' },
+    { n: 'Samsung 980 Pro 2TB NVMe', p: 130, sp: '2TB · NVMe' },
+    { n: 'Samsung 990 Pro 4TB NVMe', p: 280, sp: '4TB · NVMe Gen4' },
+    { n: 'Crucial T705 2TB NVMe', p: 260, sp: '2TB · NVMe Gen5' },
+    { n: 'Seagate Barracuda 2TB', p: 50, sp: '2TB · HDD' },
+    { n: 'WD Red Plus 8TB', p: 170, sp: '8TB · NAS HDD' }
+  ],
+  psu: [
+    { n: 'Corsair CV550 550W', p: 50, w: 550, sp: '550W · 80+ Bronze' },
+    { n: 'Corsair RM750e 750W', p: 95, w: 750, sp: '750W · 80+ Gold' },
+    { n: 'MSI MAG A850GL 850W', p: 115, w: 850, sp: '850W · 80+ Gold' },
+    { n: 'Corsair RM1000e 1000W', p: 150, w: 1000, sp: '1000W · 80+ Gold' },
+    { n: 'be quiet! Straight Power 12 1200W', p: 230, w: 1200, sp: '1200W · 80+ Platinum' },
+    { n: 'Corsair HX1500i 1500W', p: 330, w: 1500, sp: '1500W · 80+ Platinum' },
+    { n: 'Seasonic Prime TX-1600', p: 450, w: 1600, sp: '1600W · 80+ Titanium' }
+  ],
+  case: [
+    { n: 'Cooler Master Q300L', p: 45, f: ['mATX','ITX'], gl: 360, sp: 'mATX · 360mm GPU' },
+    { n: 'Fractal Pop Air', p: 85, f: ['ATX','mATX','ITX'], gl: 405, sp: 'ATX · 405mm GPU' },
+    { n: 'Lian Li Lancool 216', p: 105, f: ['ATX','mATX','ITX'], gl: 392, sp: 'ATX · 392mm GPU' },
+    { n: 'NZXT H5 Flow', p: 90, f: ['ATX','mATX','ITX'], gl: 365, sp: 'ATX · 365mm GPU' },
+    { n: 'Corsair 4000D Airflow', p: 85, f: ['ATX','mATX','ITX'], gl: 360, sp: 'ATX · 360mm GPU' },
+    { n: 'Fractal North', p: 140, f: ['ATX','mATX','ITX'], gl: 355, sp: 'ATX · 355mm GPU' },
+    { n: 'Fractal Meshify 2 XL', p: 190, f: ['EATX','ATX','mATX','ITX'], gl: 491, sp: 'E-ATX · 491mm GPU' },
+    { n: 'Lian Li O11 Dynamic EVO XL', p: 210, f: ['EATX','ATX','mATX','ITX'], gl: 455, sp: 'E-ATX · 455mm GPU' },
+    { n: 'Corsair 7000D Airflow', p: 220, f: ['EATX','ATX','mATX','ITX'], gl: 450, sp: 'E-ATX · 450mm GPU' }
+  ]
+};
+
+/* ── STATE ── */
+var build = {};
+try { build = JSON.parse(localStorage.getItem('pcbuild') || '{}') || {}; } catch (e) { build = {}; }
+function save() { try { localStorage.setItem('pcbuild', JSON.stringify(build)); } catch (e) {} }
+function money(n) { return '£' + n.toLocaleString('en-GB'); }
+function get(cat) { var i = build[cat]; return (i != null && DATA[cat][i]) ? DATA[cat][i] : null; }
+
+/* ── COMPATIBILITY: returns reason string or '' ── */
+function incompat(cat, p) {
+  var cpu = get('cpu'), mobo = get('mobo'), ram = get('ram'), gpu = get('gpu'), cs = get('case');
+  if (cat === 'cpu' && mobo && mobo.s !== p.s) return 'Needs ' + mobo.s + ' board';
+  if (cat === 'mobo') {
+    if (cpu && cpu.s !== p.s) return 'Socket ' + p.s + ' ≠ CPU ' + cpu.s;
+    if (ram && ram.m !== p.m) return 'Takes ' + p.m + ', RAM is ' + ram.m;
+    if (cs && cs.f.indexOf(p.f) < 0) return p.f + ' won\'t fit the case';
+  }
+  if (cat === 'ram' && mobo && mobo.m !== p.m) return 'Board needs ' + mobo.m;
+  if (cat === 'cooler') {
+    var s = cpu ? cpu.s : (mobo ? mobo.s : null);
+    if (s && p.s.indexOf(s) < 0) return 'No ' + s + ' support';
+  }
+  if (cat === 'gpu' && cs && p.l > cs.gl) return 'Too long for case (' + cs.gl + 'mm max)';
+  if (cat === 'case') {
+    if (mobo && p.f.indexOf(mobo.f) < 0) return 'Won\'t fit ' + mobo.f + ' board';
+    if (gpu && gpu.l > p.gl) return 'GPU too long (' + p.gl + 'mm max)';
+  }
+  return '';
+}
+
+/* ── RENDER ── */
+function render() {
+  var html = '', total = 0, count = 0, rows = '';
+  CATS.forEach(function (c) {
+    var p = get(c.id);
+    html += '<div class="part-row"><span class="part-cat">' + c.name + '</span>';
+    if (p) {
+      total += p.p; count++;
+      html += '<div><div class="part-name">' + p.n + '</div><div class="part-spec">' + p.sp + ' · ' + pics(p) + '</div></div>'
+        + '<div class="part-actions"><span class="part-price">' + money(p.p) + '</span>'
+        + '<button class="btn-ghost" data-open="' + c.id + '">Change</button>'
+        + '<button class="btn-ghost danger" data-remove="' + c.id + '" aria-label="Remove">✕</button></div>';
+    } else {
+      html += '<span class="part-empty">Nothing selected</span>'
+        + '<div class="part-actions"><button class="btn-cyan" data-open="' + c.id + '">Choose</button></div>';
+    }
+    html += '</div>';
+  });
+  document.getElementById('parts').innerHTML = html;
+
+  var cpu = get('cpu'), gpu = get('gpu'), psu = get('psu');
+  var draw = (cpu ? cpu.w : 0) + (gpu ? gpu.w : 0) + 100;
+  rows += '<div class="sum-row">Parts chosen<b>' + count + ' / ' + CATS.length + '</b></div>';
+  rows += '<div class="sum-row">Est. power draw<b>' + (cpu || gpu ? draw + 'W' : '—') + '</b></div>';
+  document.getElementById('sum-rows').innerHTML = rows;
+  document.getElementById('total').textContent = money(total);
+
+  var checks = [];
+  function add(t, m) { checks.push('<div class="check ' + t + '">' + m + '</div>'); }
+  var bad = false;
+  CATS.forEach(function (c) {
+    var p = get(c.id);
+    if (p) { var r = incompat(c.id, p); if (r) { bad = true; add('bad', c.name + ': ' + r); } }
+  });
+  if (psu && (cpu || gpu)) {
+    if (psu.w < draw * 1.2) { bad = true; add('bad', 'PSU is too small. Aim for ' + Math.ceil(draw * 1.2 / 50) * 50 + 'W or more.'); }
+    else add('ok', 'PSU has enough headroom.');
+  }
+  if (!bad && count > 1) add('ok', 'No compatibility problems found.');
+  if (count === 0) add('warn', 'Start by choosing a CPU or motherboard.');
+  else if (count < CATS.length) add('warn', (CATS.length - count) + ' part' + (CATS.length - count > 1 ? 's' : '') + ' still to pick.');
+  else if (!bad) add('ok', 'Build complete.');
+  document.getElementById('checks').innerHTML = checks.join('');
+  if (typeof drawModel === 'function') drawModel();
+}
+
+/* ── MODAL ── */
+var current = null;
+function openPicker(cat) {
+  current = cat;
+  document.getElementById('m-title').textContent = 'Choose ' + CATS.filter(function (c) { return c.id === cat; })[0].name;
+  document.getElementById('m-search').value = '';
+  document.getElementById('backdrop').classList.add('open');
+  renderList();
+  document.getElementById('m-search').focus();
+}
+function closePicker() { document.getElementById('backdrop').classList.remove('open'); current = null; }
+
+function renderList() {
+  if (!current) return;
+  var q = document.getElementById('m-search').value.toLowerCase().trim();
+  var asc = document.getElementById('m-sort').value === 'lo';
+  var items = DATA[current].map(function (p, i) { return { p: p, i: i }; }).filter(function (x) {
+    return !q || (x.p.n + ' ' + x.p.sp).toLowerCase().indexOf(q) >= 0;
+  });
+  items.sort(function (a, b) { return asc ? a.p.p - b.p.p : b.p.p - a.p.p; });
+  if (!items.length) { document.getElementById('m-list').innerHTML = '<div class="empty">No parts match.</div>'; return; }
+  document.getElementById('m-list').innerHTML = items.map(function (x) {
+    var why = incompat(current, x.p);
+    return '<div class="opt' + (why ? ' dim' : '') + '"><div><div class="part-name">' + x.p.n + '</div><div class="part-spec">' + x.p.sp + ' · ' + pics(x.p) + '</div>'
+      + (why ? '<div class="why">' + why + '</div>' : '') + '</div>'
+      + '<span class="part-price">' + money(x.p.p) + '</span>'
+      + '<button class="' + (why ? 'btn-ghost' : 'btn-cyan') + '" data-pick="' + x.i + '">' + (why ? 'Add anyway' : 'Add') + '</button></div>';
+  }).join('');
+}
+
+document.addEventListener('click', function (e) {
+  var t = e.target.closest('button'); if (!t) return;
+  if (t.dataset.open) openPicker(t.dataset.open);
+  else if (t.dataset.remove) { delete build[t.dataset.remove]; save(); render(); }
+  else if (t.dataset.pick != null && current) { build[current] = +t.dataset.pick; save(); closePicker(); render(); }
+});
+document.getElementById('m-close').addEventListener('click', closePicker);
+document.getElementById('backdrop').addEventListener('click', function (e) { if (e.target === this) closePicker(); });
+document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closePicker(); });
+document.getElementById('m-search').addEventListener('input', renderList);
+document.getElementById('m-sort').addEventListener('change', renderList);
+document.getElementById('reset').addEventListener('click', function () { build = {}; save(); render(); });
+
+/* ── PICS LINK ── */
+function pics(p) { return '<a class="pics" target="_blank" rel="noopener noreferrer" href="https://www.google.com/search?tbm=isch&q=' + encodeURIComponent(p.n) + '">Pics ↗</a>'; }
+
+/* ── MODEL ── */
+var view = '3d', T3 = null, dragging = false, lx = 0, ly = 0, yaw = -0.55, pitch = 0.2, camZ = 88;
+
+function drawModel() {
+  build3D();
+}
+
+function init3D() {
+  if (T3) return true;
+  var host = document.getElementById('m3d');
+  if (typeof THREE === 'undefined') { host.innerHTML = '<div class="empty">3D view needs three.js from cdnjs. Check your connection.</div>'; return false; }
+  var r = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  host.innerHTML = ''; host.appendChild(r.domElement);
+  var sc = new THREE.Scene();
+  var cam = new THREE.PerspectiveCamera(40, 1, 1, 400);
+  sc.add(new THREE.AmbientLight(0xffffff, 0.65));
+  var dl = new THREE.DirectionalLight(0xffffff, 0.8); dl.position.set(30, 50, 60); sc.add(dl);
+  var pl = new THREE.PointLight(0x00e0ff, 0.7, 90); pl.position.set(0, 0, 8); sc.add(pl);
+  var root = new THREE.Group(); sc.add(root);
+  T3 = { r: r, sc: sc, cam: cam, root: root, fans: [], model: null };
+  size3D();
+  return true;
+}
+function size3D() {
+  if (!T3) return;
+  var h = document.getElementById('m3d'), w = h.clientWidth || 600, ht = h.clientHeight || 420;
+  T3.r.setSize(w, ht, false); T3.cam.aspect = w / ht; T3.cam.updateProjectionMatrix();
+}
+window.addEventListener('resize', size3D);
+
+function build3D() {
+  if (!T3) return;
+  if (T3.model) {
+    T3.root.remove(T3.model);
+    T3.model.traverse(function (o) { if (o.geometry) o.geometry.dispose(); if (o.material) o.material.dispose(); });
+  }
+  T3.fans = [];
+  T3.model = makePC(T3.fans);
+  T3.root.add(T3.model);
+}
+
+function makePC(fans) {
+  var g = new THREE.Group();
+  var cpu = get('cpu'), cool = get('cooler'), mb = get('mobo'), ram = get('ram'), gpu = get('gpu'), st = get('storage'), psu = get('psu'), cs = get('case');
+  var CY = 0x00e0ff, GH = 0x3a5878;
+  function M(c, o) { o = o || {}; return new THREE.MeshStandardMaterial({ color: c, roughness: o.r != null ? o.r : 0.55, metalness: o.m != null ? o.m : 0.3, emissive: o.e || 0x000000, emissiveIntensity: o.ei || 1, transparent: !!o.t, opacity: o.op != null ? o.op : 1, depthWrite: !o.t }); }
+  function B(w, h, d, mat, x, y, z) { var m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat); m.position.set(x, y, z); g.add(m); return m; }
+  function ghost(w, h, d, x, y, z) {
+    var l = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(w, h, d)), new THREE.LineBasicMaterial({ color: GH, transparent: true, opacity: 0.55 }));
+    l.position.set(x, y, z); g.add(l);
+  }
+  function fan(rad, x, y, z, rx, ry) {
+    var f = new THREE.Group();
+    f.add(new THREE.Mesh(new THREE.TorusGeometry(rad, 0.35, 8, 32), M(0x1b2538)));
+    var rotor = new THREE.Group();
+    var hub = new THREE.Mesh(new THREE.CylinderGeometry(rad * 0.25, rad * 0.25, 0.6, 16), M(0x0a0f1a, { e: CY, ei: 0.7 }));
+    hub.rotation.x = Math.PI / 2; rotor.add(hub);
+    for (var i = 0; i < 9; i++) {
+      var pv = new THREE.Group(); pv.rotation.z = i * Math.PI * 2 / 9;
+      var bl = new THREE.Mesh(new THREE.BoxGeometry(rad * 0.7, rad * 0.3, 0.1), M(0x2a3a55, { t: true, op: 0.9 }));
+      bl.position.x = rad * 0.55; bl.rotation.x = 0.5; pv.add(bl); rotor.add(pv);
+    }
+    f.add(rotor); f.rotation.set(rx || 0, ry || 0, 0); f.position.set(x, y, z);
+    fans.push(rotor); g.add(f);
+  }
+
+  /* case size */
+  var form = mb ? mb.f : 'ATX';
+  var L = 44, H = 46, D = 22;
+  if (form === 'EATX') { L = 52; H = 52; D = 24; }
+  else if (cs && cs.f.indexOf('ATX') < 0) { L = 38; H = 40; D = 20; }
+  var lineMat = new THREE.LineBasicMaterial({ color: cs ? CY : GH, transparent: true, opacity: cs ? 0.9 : 0.5 });
+  g.add(new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(L, H, D)), lineMat));
+  B(L, H, 0.4, M(cs ? 0x0b1322 : 0x0b1322, { t: !cs, op: cs ? 1 : 0.35 }), 0, 0, -D / 2);
+  B(L, 0.4, D, M(0x0b1322, { t: true, op: cs ? 0.95 : 0.3 }), 0, -H / 2, 0);
+  if (cs) {
+    B(L, 0.4, D, M(0x0b1322, { t: true, op: 0.35 }), 0, H / 2, 0);
+    B(0.4, H, D, M(0x0b1322, { t: true, op: 0.3 }), L / 2, 0, 0);
+    B(0.4, H, D, M(0x0b1322, { t: true, op: 0.3 }), -L / 2, 0, 0);
+    B(L, H, 0.2, M(CY, { t: true, op: 0.06, m: 0, r: 0.1 }), 0, 0, D / 2);
+    fan(5.9, L / 2 - 1.2, -H * 0.27, 0, 0, Math.PI / 2);
+    fan(5.9, L / 2 - 1.2, 0, 0, 0, Math.PI / 2);
+    fan(5.9, L / 2 - 1.2, H * 0.27, 0, 0, Math.PI / 2);
+    fan(5.9, -L / 2 + 1.2, H / 2 - 9.5, -D / 2 + 8, 0, Math.PI / 2);
+  }
+
+  /* motherboard */
+  var dim = { EATX: [30.5, 33], ATX: [24.4, 30.5], mATX: [24.4, 24.4], ITX: [17, 17] }[form];
+  var mw = dim[0], mh = dim[1];
+  var mx = -L / 2 + 3.2 + mw / 2, my = H / 2 - 2.5 - mh / 2, mz = -D / 2 + 0.7;
+  if (mb) {
+    B(mw, mh, 0.2, M(0x13293f, { m: 0.2 }), mx, my, mz);
+    B(2.2, mh * 0.3, 1.6, M(0x2b3a52, { m: 0.6 }), mx - mw / 2 + 1.5, my + mh / 2 - mh * 0.17, mz + 0.9);
+    B(mw * 0.4, 2, 1.6, M(0x2b3a52, { m: 0.6 }), mx - mw * 0.1, my + mh / 2 - 1.5, mz + 0.9);
+    B(4.5, 4.5, 0.9, M(0x2b3a52, { m: 0.6, e: CY, ei: 0.12 }), mx + mw * 0.2, my - mh * 0.34, mz + 0.55);
+    B(mw * 0.75, 0.6, 0.9, M(0x0a0f1a), mx - mw * 0.02, my - mh * 0.1 - 6.2, mz + 0.5);
+  } else {
+    ghost(mw, mh, 0.4, mx, my, mz);
+  }
+  var cx = mx - mw * 0.08, cy = my + mh * 0.2;
+
+  /* cpu */
+  var cw = cpu ? (cpu.s === 'SP5' ? 7.5 : (cpu.s === 'LGA4677' ? 6.5 : 4)) : 4;
+  if (cpu) B(cw, cw, 0.35, M(0xb8c3d4, { m: 0.8, r: 0.3 }), cx, cy, mz + 0.35);
+  else ghost(cw, cw, 0.35, cx, cy, mz + 0.35);
+
+  /* cooler */
+  if (cool) {
+    if (/AIO|Liquid|Titan/i.test(cool.sp + cool.n)) {
+      var len = /360/.test(cool.sp) ? 39 : 27, nf = len > 30 ? 3 : 2;
+      var rxm = L / 2 - 3 - len / 2, ry = H / 2 - 2, rz = -D / 2 + 9;
+      var blk = new THREE.Mesh(new THREE.CylinderGeometry(3.2, 3.2, 2.2, 24), M(0x0e1626, { e: CY, ei: 0.35 }));
+      blk.rotation.x = Math.PI / 2; blk.position.set(cx, cy, mz + 1.6); g.add(blk);
+      var path = new THREE.CatmullRomCurve3([new THREE.Vector3(cx + 1.2, cy + 3, mz + 2), new THREE.Vector3(cx + 3, cy + 9, mz + 4), new THREE.Vector3(rxm - len / 2 + 1.5, ry - 1.5, rz)]);
+      g.add(new THREE.Mesh(new THREE.TubeGeometry(path, 24, 0.45, 8, false), M(0x111827)));
+      var path2 = new THREE.CatmullRomCurve3([new THREE.Vector3(cx - 1.2, cy + 3, mz + 2), new THREE.Vector3(cx - 1, cy + 8, mz + 4.5), new THREE.Vector3(rxm - len / 2 + 3.5, ry - 1.5, rz)]);
+      g.add(new THREE.Mesh(new THREE.TubeGeometry(path2, 24, 0.45, 8, false), M(0x111827)));
+      B(len, 2.7, 12.5, M(0x1a2233, { m: 0.5 }), rxm, ry, rz);
+      for (var q = 0; q < nf; q++) fan(5.7, rxm - len / 2 + 6.3 + q * 12.3, ry - 1.7, rz, Math.PI / 2, 0);
+    } else {
+      for (var i = 0; i < 20; i++) B(12, 15, 0.26, M(0x9aa7bb, { m: 0.8, r: 0.35 }), cx, cy, mz + 1 + i * 0.62);
+      B(12.4, 0.5, 12.6, M(0x4a5870, { m: 0.8 }), cx, cy + 7.7, mz + 7);
+      fan(6, cx + 6.5, cy, mz + 7, 0, Math.PI / 2);
+    }
+  } else ghost(12, 15, 12.5, cx, cy, mz + 7);
+
+  /* ram */
+  var nr = ram ? (/RDIMM/.test(ram.m) ? 4 : 2) : 0;
+  for (var k = 0; k < 4; k++) {
+    var rx0 = mx + mw * 0.22 + k * 1.0;
+    B(0.5, 13.5, 0.9, M(0x0a0f1a), rx0, cy, mz + 0.5);
+    if (k < nr) {
+      B(0.55, 13.3, 3, M(0x1a2438, { m: 0.3 }), rx0, cy, mz + 2);
+      B(0.65, 13.3, 0.5, M(CY, { e: CY, ei: 0.9 }), rx0, cy, mz + 3.4);
+    }
+  }
+
+  /* gpu */
+  var gy = my - mh * 0.1;
+  if (gpu) {
+    var gl = gpu.l * 0.1, gx0 = mx - mw / 2 + 0.5, gcx = gx0 + gl / 2, gz = mz + 3;
+    B(gl, 12.5, 4.4, M(0x151d2c, { m: 0.5, r: 0.4 }), gcx, gy, gz);
+    B(gl, 0.35, 4.5, M(CY, { e: CY, ei: 1 }), gcx, gy + 6.3, gz);
+    B(gl, 0.3, 1.2, M(0x2b3a52, { m: 0.7 }), gcx, gy - 6.3, gz + 2);
+    var ng = gl > 30 ? 3 : 2;
+    for (var j = 0; j < ng; j++) fan(4.3, gx0 + gl * (j + 0.5) / ng, gy - 6.5, gz, Math.PI / 2, 0);
+  } else ghost(28, 12.5, 4.4, mx - mw / 2 + 14.5, gy, mz + 3);
+
+  /* storage */
+  if (st) B(1.1, 10, 7, M(0x333c4f, { m: 0.6 }), L / 2 - 5, -H / 2 + 6.5, -D / 2 + 5);
+  else ghost(1.1, 10, 7, L / 2 - 5, -H / 2 + 6.5, -D / 2 + 5);
+
+  /* psu */
+  var px = -L / 2 + 8.2, py = -H / 2 + 0.2 + 4.3;
+  if (psu) {
+    B(15, 8.6, 14, M(0x0e1626, { m: 0.4 }), px, py, 0);
+    B(8, 0.2, 5, M(CY, { e: CY, ei: 0.5 }), px, py + 4.4, 0);
+  } else ghost(15, 8.6, 14, px, py, 0);
+
+  return g;
+}
+
+function loop() {
+  if (view !== '3d' || !T3) return;
+  if (!dragging) yaw += 0.003;
+  T3.root.rotation.y = yaw; T3.root.rotation.x = pitch;
+  T3.cam.position.set(0, 4, camZ); T3.cam.lookAt(0, 0, 0);
+  T3.fans.forEach(function (rt) { rt.rotation.z += 0.12; });
+  T3.r.render(T3.sc, T3.cam);
+  requestAnimationFrame(loop);
+}
+if (init3D()) { size3D(); build3D(); requestAnimationFrame(loop); }
+var stage3 = document.getElementById('m3d');
+stage3.addEventListener('pointerdown', function (e) { dragging = true; lx = e.clientX; ly = e.clientY; stage3.setPointerCapture(e.pointerId); });
+stage3.addEventListener('pointermove', function (e) { if (!dragging) return; yaw += (e.clientX - lx) * 0.008; pitch = Math.max(-0.7, Math.min(0.9, pitch + (e.clientY - ly) * 0.006)); lx = e.clientX; ly = e.clientY; });
+stage3.addEventListener('pointerup', function () { dragging = false; });
+stage3.addEventListener('pointercancel', function () { dragging = false; });
+stage3.addEventListener('wheel', function (e) { e.preventDefault(); camZ = Math.max(45, Math.min(150, camZ + e.deltaY * 0.05)); }, { passive: false });
+
+render();
+</script>
+</body>
+</html>
