@@ -197,7 +197,8 @@ footer { border-top: 1px solid var(--border); padding: 1rem 1.5rem; text-align: 
 <script>
 var CF  = 'https://speed.cloudflare.com';
 var ARC = 670;
-var DL_MAX_MS = 12000; // cap download phase length (servers vary in file size / speed)
+var TEST_MS = 5000;  // length of each download / upload test
+var RAMP_MS = 1000;  // ignored at the start while connections warm up
 
 /* ── DOM refs ── */
 var $ = function(id) { return document.getElementById(id); };
@@ -242,7 +243,7 @@ function pingUrl(s) {
                          : s.base + s.pingPath + '?cors=true&r=' + Math.random();
 }
 function downUrl(s) {
-  return s.type === 'cf' ? s.base + '/__down?bytes=35000000&_=' + Date.now()
+  return s.type === 'cf' ? s.base + '/__down?bytes=25000000&_=' + Date.now()
                          : s.base + s.dl + '?cors=true&ckSize=100&r=' + Math.random();
 }
 function upUrl(s) {
@@ -412,58 +413,85 @@ async function measurePing(s) {
   return avg;
 }
 
-/* ── Download ── */
-async function measureDownload(s) {
-  setPhaseTab('dl'); setPhaseText('Download'); resetGauge(); unitEl.textContent = 'Mbps';
-  await pingOnce(s, 3000); // warm up connection
-  var t0 = performance.now(), response;
-  try { response = await fetch(downUrl(s), { cache: 'no-store' }); }
-  catch (e) { return 0; }
-  var reader = response.body.getReader(), bytes = 0, peak = 0, SKIP = 500;
-  while (true) {
+/* ── Timed download / upload (fixed duration, parallel streams, like Ookla) ── */
+function timedTest(s, kind) {
+  return new Promise(function(resolve) {
+    var DUR = TEST_MS, RAMP = RAMP_MS;
+    var bytes = 0, t0 = performance.now(), samples = [], stop = false;
+    var rampB = null, rampT = null, ctl = new AbortController(), xhrs = [];
     var chunk;
-    try { chunk = await reader.read(); } catch (e) { break; }
-    if (chunk.done) break;
-    bytes += chunk.value.length;
-    var elapsed = performance.now() - t0;
-    if (elapsed > SKIP) {
-      var mbps = (bytes * 8) / (elapsed / 1000) / 1e6;
-      if (mbps > peak) peak = mbps;
-      setGauge(mbps);
+    if (kind === 'ul') {
+      chunk = new Uint8Array(4 * 1024 * 1024);
+      if (window.crypto && crypto.getRandomValues) crypto.getRandomValues(chunk.subarray(0, 65536));
     }
-    if (elapsed > DL_MAX_MS) { try { reader.cancel(); } catch (e) {} break; }
-  }
-  resDl.textContent = fmt(peak); resDl.classList.add('lit');
-  doneTab(tabDl);
-  return peak;
+
+    async function dlWorker() {
+      while (!stop) {
+        try {
+          var r = await fetch(downUrl(s), { cache: 'no-store', signal: ctl.signal });
+          var rd = r.body.getReader();
+          while (true) { var c = await rd.read(); if (c.done) break; bytes += c.value.length; }
+        } catch (e) { if (stop) break; await sleep(200); }
+      }
+    }
+    function ulWorker() {
+      return new Promise(function(done) {
+        (function next() {
+          if (stop) return done();
+          var x = new XMLHttpRequest(), last = 0;
+          xhrs.push(x);
+          x.open('POST', upUrl(s), true);
+          x.upload.onprogress = function(e) { bytes += e.loaded - last; last = e.loaded; };
+          x.onload = next;
+          x.onerror = x.ontimeout = function() { if (stop) done(); else setTimeout(next, 200); };
+          x.onabort = function() { done(); };
+          x.send(chunk);
+        })();
+      });
+    }
+
+    var tick = setInterval(function() {
+      var el = performance.now() - t0;
+      samples.push({ t: el, b: bytes });
+      if (rampB === null && el >= RAMP) { rampB = bytes; rampT = el; }
+      // gauge shows speed over the last second
+      var ref = samples[0];
+      for (var i = samples.length - 1; i >= 0; i--) { if (samples[i].t <= el - 1000) { ref = samples[i]; break; } }
+      setGauge((bytes - ref.b) * 8 / (Math.max(el - ref.t, 1) / 1000) / 1e6);
+    }, 100);
+
+    var n = kind === 'dl' ? 4 : 3, workers = [];
+    for (var i = 0; i < n; i++) workers.push(kind === 'dl' ? dlWorker() : ulWorker());
+
+    setTimeout(function() {
+      stop = true; clearInterval(tick);
+      var end = performance.now() - t0;
+      ctl.abort(); xhrs.forEach(function(x) { try { x.abort(); } catch (e) {} });
+      // final result = average speed after the ramp-up period
+      var mbps = rampB !== null ? (bytes - rampB) * 8 / ((end - rampT) / 1000) / 1e6
+                                : bytes * 8 / (end / 1000) / 1e6;
+      resolve(mbps);
+    }, DUR);
+  });
 }
 
-/* ── Upload ── */
+async function measureDownload(s) {
+  setPhaseTab('dl'); setPhaseText('Download'); resetGauge(); unitEl.textContent = 'Mbps';
+  await pingOnce(s, 3000);
+  var mbps = await timedTest(s, 'dl');
+  setGauge(mbps);
+  resDl.textContent = fmt(mbps); resDl.classList.add('lit');
+  doneTab(tabDl);
+  return mbps;
+}
+
 async function measureUpload(s) {
   setPhaseTab('ul'); setPhaseText('Upload'); resetGauge(); unitEl.textContent = 'Mbps';
-  var size = 12 * 1024 * 1024, buf = new Uint8Array(size);
-  if (window.crypto && crypto.getRandomValues) crypto.getRandomValues(buf.subarray(0, Math.min(65536, size)));
-  return new Promise(function(resolve) {
-    var t0 = performance.now(), peak = 0, xhr = new XMLHttpRequest();
-    xhr.open('POST', upUrl(s), true);
-    xhr.upload.onprogress = function(e) {
-      if (!e.lengthComputable) return;
-      var elapsed = performance.now() - t0;
-      if (elapsed < 300) return;
-      var mbps = (e.loaded * 8) / (elapsed / 1000) / 1e6;
-      if (mbps > peak) peak = mbps;
-      setGauge(mbps);
-    };
-    function finish() {
-      var elapsed = (performance.now() - t0) / 1000;
-      var mbps = elapsed > 0 ? Math.max(peak, (size * 8) / elapsed / 1e6) : 0;
-      resUl.textContent = fmt(mbps); resUl.classList.add('lit');
-      doneTab(tabUl); resolve(mbps);
-    }
-    xhr.onload = xhr.onerror = xhr.ontimeout = finish;
-    xhr.timeout = 25000;
-    xhr.send(buf.buffer);
-  });
+  var mbps = await timedTest(s, 'ul');
+  setGauge(mbps);
+  resUl.textContent = fmt(mbps); resUl.classList.add('lit');
+  doneTab(tabUl);
+  return mbps;
 }
 
 /* ── Run ── */
